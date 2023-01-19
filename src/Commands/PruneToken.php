@@ -3,6 +3,7 @@
 namespace Albet\SanctumRefresh\Commands;
 
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class PruneToken extends Command
@@ -16,7 +17,7 @@ class PruneToken extends Command
         $tokens = PersonalAccessToken::get();
 
         foreach ($tokens as $token) {
-            $refreshExpr = Carbon::parse($token->created_at)->addMinute(config('sanctum-refresh.refresh_expiration'));
+            $refreshExpr = Carbon::parse($token->created_at)->addMinutes(config('sanctum-refresh.refresh_expiration'));
 
             if($refreshExpr->lte(now())) {
                 $token->delete();

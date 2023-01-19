@@ -10,5 +10,5 @@ return [
     /**
      * Sanctum Refresh Token expiration in minues.
      */
-    'expiration' => 30, // 30 minutes
+    'refresh_expiration' => 30, // 30 minutes
 ];
