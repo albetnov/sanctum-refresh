@@ -15,7 +15,7 @@ class CheckRefreshToken
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
@@ -27,7 +27,7 @@ class CheckRefreshToken
             $request->get('refresh_token');
 
         // Parse tokenId
-        $tokenId = explode(":", $refreshToken)[0];
+        $tokenId = explode(':', $refreshToken)[0];
 
         // Check whenever the refresh token still valid or already expired
         $tokenModel = PersonalAccessToken::find($tokenId);
@@ -40,7 +40,7 @@ class CheckRefreshToken
 
         // return bad request if the refresh token is neither invalid or expired.
         return response()->json([
-            'message' => 'Refresh token is expired or invalid.'
+            'message' => 'Refresh token is expired or invalid.',
         ], 400);
     }
 }

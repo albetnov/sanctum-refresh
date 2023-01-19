@@ -2,9 +2,9 @@
 
 namespace Albet\SanctumRefresh\Tests;
 
+use Albet\SanctumRefresh\SanctumRefreshServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Albet\SanctumRefresh\SanctumRefreshServiceProvider;
 
 class TestCase extends Orchestra
 {

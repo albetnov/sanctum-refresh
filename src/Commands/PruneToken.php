@@ -19,12 +19,12 @@ class PruneToken extends Command
         foreach ($tokens as $token) {
             $refreshExpr = Carbon::parse($token->created_at)->addMinutes(config('sanctum-refresh.refresh_expiration'));
 
-            if($refreshExpr->lte(now())) {
+            if ($refreshExpr->lte(now())) {
                 $token->delete();
             }
         }
 
-        $this->info("Token cleared successfully!");
+        $this->info('Token cleared successfully!');
 
         $this->info('All done');
 

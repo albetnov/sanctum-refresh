@@ -27,21 +27,21 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => [Rule::requiredIf(fn() => !isset($this->email)), 'string'],
-            'email' => [Rule::requiredIf(fn() => !isset($this->username)), 'email'],
-            'password' => 'required'
+            'username' => [Rule::requiredIf(fn () => ! isset($this->email)), 'string'],
+            'email' => [Rule::requiredIf(fn () => ! isset($this->username)), 'email'],
+            'password' => 'required',
         ];
     }
 
-    public function auth(): User | bool
+    public function auth(): User|bool
     {
-        if($this->has('email')) {
+        if ($this->has('email')) {
             $attemptPayload = $this->only('email', 'password');
         } else {
             $attemptPayload = $this->only('username', 'password');
         }
 
-        if(!Auth::attempt($attemptPayload)) {
+        if (! Auth::attempt($attemptPayload)) {
             return false;
         }
 

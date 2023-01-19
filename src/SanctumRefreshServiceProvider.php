@@ -20,7 +20,7 @@ class SanctumRefreshServiceProvider extends PackageServiceProvider
         $package
             ->name('sanctum-refresh')
             ->hasConfigFile()
-            ->hasMigration("add_refresh_token_to_personal_access_token")
+            ->hasMigration('add_refresh_token_to_personal_access_token')
             ->hasCommand(PruneToken::class);
     }
 

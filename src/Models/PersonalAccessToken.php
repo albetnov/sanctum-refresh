@@ -14,7 +14,6 @@ class PersonalAccessToken extends \Laravel\Sanctum\PersonalAccessToken
     // append plain refresh token
     protected $appends = ['plain_refresh_token'];
 
-
     protected static function boot()
     {
         parent::boot();
@@ -29,7 +28,7 @@ class PersonalAccessToken extends \Laravel\Sanctum\PersonalAccessToken
     {
         // Decrypt refresh token.
         return Attribute::make(
-            get: fn() => $this->id . ":" . Crypt::decryptString($this->refresh_token)
+            get: fn () => $this->id.':'.Crypt::decryptString($this->refresh_token)
         );
     }
 }
