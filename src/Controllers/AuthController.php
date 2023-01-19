@@ -2,9 +2,10 @@
 
 namespace Albet\SanctumRefresh\Controllers;
 
+use Albet\SanctumRefresh\Helpers\Calculate;
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Requests\LoginRequest;
-use Carbon\Carbon;
+use Albet\SanctumRefresh\SanctumRefresh;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -24,12 +25,11 @@ class AuthController extends Controller
         $token = $user->createToken('web', ['*'], now()->addMinutes(config('sanctum-refresh.expiration')));
 
         return response()->json([
-            'message' => 'Authenticated successfully!',
+            'message' => SanctumRefresh::$authedMessage,
             'token' => $token->plainTextToken,
             'expires_in' => $token->accessToken->expires_at,
             'refresh_token' => $token->accessToken->plain_refresh_token,
-            'refresh_token_expires_in' => Carbon::parse($token->accessToken->created_at)
-                ->addMinutes(config('sanctum-refresh.refresh_expiration')),
+            'refresh_token_expires_in' => Calculate::estimateRefreshToken($token->accessToken->created_at)
         ])->withCookie(cookie('refresh_token', $token->accessToken->plain_refresh_token, 0, null, null, null, true));
     }
 
@@ -57,8 +57,7 @@ class AuthController extends Controller
             'token' => $newToken->plainTextToken,
             'expires_in' => $newToken->accessToken->expires_at,
             'refresh_token' => $newToken->accessToken->plain_refresh_token,
-            'refresh_token_expires_in' => Carbon::parse($newToken->accessToken->created_at)
-                ->addMinutes(config('sanctum-refresh.refresh_expiration')),
+            'refresh_token_expires_in' => Calculate::estimateRefreshToken($newToken->accessToken->created_at)
         ]);
     }
 }

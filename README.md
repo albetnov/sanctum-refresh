@@ -40,13 +40,54 @@ return [
 
 ## Usage
 
-Register in `RouteServiceProvider`:
+Install the Middleware at `App\Http\Kernel` in `$routeMiddleware` add:
+
+```php
+'checkRefreshToken' => Albet\SanctumRefresh\Middleware\CheckRefreshToken
+```
+
+Optionally, you can register provided routes in `RouteServiceProvider`:
 
 ```php
 SanctumRefresh::routes();
 ```
 
+Customizing routes can be perfomed by putting associative array arguments.
+Full config example:
+
+```php
+SanctumRefresh::routes([
+    // set the authentication success message
+    'authedMsg' => trans('auth.authed'),
+    // disable login route.
+    'refreshOnly' => true,
+    // set login url
+    'loginUrl' => '/login',
+    // set refresh url
+    'refreshUrl' => '/auth/refresh',
+    // set login route middlewares
+    'loginMiddleware' => 'admin',
+    // set refresh route middlewares
+    'refreshMiddleware' => ['can_refresh', 'is_mobile']
+]);
+```
+
+## Going Manual
+
+You can manually perform login nor refresh using provided
+`LoginRequest->auth()` method.
+
+If you need refresh token expires in. Simply use Carbon:
+```php
+Carbon::parse($token->created_at)->addMinutes(config('sanctum-refresh.refresh_expiration'))
+```
+
+Alternatively you can wrap around `AuthController::login()` method with your own controllers.
+For refresh, we highly recommend you to wrap `AuthController::refresh()` method.
+
 ## Testing
+
+> The test has not yet been implemented. Please wait while I learn how to test package xD
 
 ```bash
 composer test

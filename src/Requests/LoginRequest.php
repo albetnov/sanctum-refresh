@@ -2,7 +2,7 @@
 
 namespace Albet\SanctumRefresh\Requests;
 
-use App\Models\User;
+use Albet\SanctumRefresh\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
