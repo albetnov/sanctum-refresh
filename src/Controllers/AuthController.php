@@ -2,62 +2,36 @@
 
 namespace Albet\SanctumRefresh\Controllers;
 
-use Albet\SanctumRefresh\Helpers\Calculate;
-use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Requests\LoginRequest;
 use Albet\SanctumRefresh\SanctumRefresh;
+use Albet\SanctumRefresh\Services\Contracts\TokenIssuer;
+use Albet\SanctumRefresh\Services\IssueToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request, IssueToken $issueToken): JsonResponse
     {
-        $user = $request->auth();
+        $token = $issueToken->issue($request);
 
-        if (! $user) {
+        if ($token == TokenIssuer::AUTH_INVALID) {
             return response()->json([
                 'message' => 'Invalid credentials',
             ], 403);
         }
 
-        $token = $user->createToken('web', ['*'], now()->addMinutes(config('sanctum-refresh.expiration')));
-
-        return response()->json([
-            'message' => SanctumRefresh::$authedMessage,
-            'token' => $token->plainTextToken,
-            'expires_in' => $token->accessToken->expires_at,
-            'refresh_token' => $token->accessToken->plain_refresh_token,
-            'refresh_token_expires_in' => Calculate::estimateRefreshToken($token->accessToken->created_at)
-        ])->withCookie(cookie('refresh_token', $token->accessToken->plain_refresh_token, 0, null, null, null, true));
+        return response()->json(
+            array_merge($token->getToken()->except('cookie')->toArray(), ['message' => SanctumRefresh::$authedMessage])
+        )
+            ->withCookie($token->getToken()->only('cookie')->toArray()['cookie']);
     }
 
-    public function refresh(Request $request): JsonResponse
+    public function refresh(Request $request, IssueToken $issueToken): JsonResponse
     {
-        // Get the refresh token from cookie
-        $refreshToken = $request->hasCookie('refresh_token') ?
-            $request->cookie('refresh_token') :
-            $request->get('refresh_token');
+        $newToken = $issueToken->refreshToken($request);
 
-        // Parse the token id
-        $tokenId = explode(':', $refreshToken)[0];
-
-        // Find token from given id
-        $token = PersonalAccessToken::find($tokenId);
-
-        // Regenerate token.
-        $newToken = $token->tokenable->createToken('web');
-
-        // Delete current token (revoke refresh token)
-        $token->delete();
-
-        // Return the token to api response.
-        return response()->json([
-            'token' => $newToken->plainTextToken,
-            'expires_in' => $newToken->accessToken->expires_at,
-            'refresh_token' => $newToken->accessToken->plain_refresh_token,
-            'refresh_token_expires_in' => Calculate::estimateRefreshToken($newToken->accessToken->created_at)
-        ]);
+        return response()->json($newToken->getToken()->toArray());
     }
 }

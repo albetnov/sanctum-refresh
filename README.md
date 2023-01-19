@@ -82,8 +82,30 @@ If you need refresh token expires in. Simply use Carbon:
 Carbon::parse($token->created_at)->addMinutes(config('sanctum-refresh.refresh_expiration'))
 ```
 
+Alternatively, SanctumRefresh provide an Helpers:
+
+```php
+use Albet\SanctumRefresh\Helpers\Calculate;
+
+Calculate::estimateRefreshToken($token->created_at);
+```
+
+Which simply a wrapper around `Carbon::parse`.
+
 Alternatively you can wrap around `AuthController::login()` method with your own controllers.
 For refresh, we highly recommend you to wrap `AuthController::refresh()` method.
+
+You can even have more control using Services provided by
+
+```php
+Albet\SanctumRefresh\Services\IssueToken::class
+```
+
+and
+
+```php
+Albet\SanctumRefresh\Services\Contracts\TokenIssuer::class
+```
 
 ## Testing
 
