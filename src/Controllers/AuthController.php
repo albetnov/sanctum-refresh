@@ -16,7 +16,7 @@ class AuthController extends Controller
     {
         $token = $issueToken->issue($request);
 
-        if ($token == TokenIssuer::AUTH_INVALID) {
+        if ($token === TokenIssuer::AUTH_INVALID) {
             return response()->json([
                 'message' => 'Invalid credentials',
             ], 403);

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class IssueToken
 {
-    public function issue(LoginRequest $request, string $tokenName = 'web', array $abilities = ['*']): TokenIssuer
+    public function issue(LoginRequest $request, string $tokenName = 'web', array $abilities = ['*']): TokenIssuer|string
     {
         $user = $request->auth();
 
