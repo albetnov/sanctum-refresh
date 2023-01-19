@@ -13,7 +13,7 @@ class IssueToken
     {
         $user = $request->auth();
 
-        if(!$user) {
+        if (! $user) {
             return TokenIssuer::AUTH_INVALID;
         }
 

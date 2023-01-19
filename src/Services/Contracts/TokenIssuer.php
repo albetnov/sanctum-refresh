@@ -8,12 +8,10 @@ use Laravel\Sanctum\NewAccessToken;
 
 class TokenIssuer
 {
-    const AUTH_INVALID = "AUTH_INVALID";
-
+    const AUTH_INVALID = 'AUTH_INVALID';
 
     public function __construct(private NewAccessToken $token)
     {
-
     }
 
     public function getToken(): Collection
@@ -31,7 +29,7 @@ class TokenIssuer
                 null,
                 null,
                 true
-            )
+            ),
         ]);
     }
 }
