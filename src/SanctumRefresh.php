@@ -16,9 +16,4 @@ class SanctumRefresh
             Route::post('/refresh', 'refresh')->middleware('checkRefreshToken');
         });
     }
-
-    public static function configure()
-    {
-        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
-    }
 }
