@@ -36,8 +36,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Albet\\SanctumRefresh\\": "src",
-            "Albet\\SanctumRefresh\\Database\\Factories\\": "database/factories"
+            "Albet\\SanctumRefresh\\": "src"
         }
     },
     "autoload-dev": {
