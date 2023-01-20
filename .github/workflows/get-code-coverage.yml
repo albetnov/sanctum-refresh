@@ -21,8 +21,8 @@ jobs:
       - name: Run Tests
         run: vendor/bin/pest --coverage
 
-      - name: Generate Code Coverage Report
-        run: vendor/bin/phpcov merge --clover coverage.xml
+      - name: Copy coverage report to build folder
+        run: cp -r build ./coverage/
 
       - name: Deploy Coverage Report
         uses: peaceiris/actions-gh-pages@v3
