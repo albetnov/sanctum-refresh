@@ -5,6 +5,10 @@ use Illuminate\Routing\RouteCollection;
 use Illuminate\Support\Facades\Route;
 use function PHPUnit\Framework\assertEquals;
 
+beforeEach(function() {
+    Route::setRoutes(new RouteCollection()); // Reset route every test.
+});
+
 it('can custom authedMessage from given config', function () {
     $msg = 'Test';
 

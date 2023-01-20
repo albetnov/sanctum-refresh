@@ -20,6 +20,7 @@
         "illuminate/contracts": "^9.0",
         "laravel/sanctum": "^3.2",
         "nesbot/carbon": "^2.65",
+        "phpunit/phpcov": "^8.2",
         "spatie/laravel-package-tools": "^1.14.0"
     },
     "require-dev": {
