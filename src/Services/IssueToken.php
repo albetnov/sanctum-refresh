@@ -2,19 +2,24 @@
 
 namespace Albet\SanctumRefresh\Services;
 
+use Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens;
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
-use Albet\SanctumRefresh\Requests\LoginRequest;
 use Albet\SanctumRefresh\Services\Contracts\TokenIssuer;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 
 class IssueToken
 {
-    public function issue(LoginRequest $request, string $tokenName = 'web', array $abilities = ['*']): TokenIssuer|string
+    /**
+     * @throws MustExtendHasApiTokens
+     */
+    public function issue(Model|bool $user, string $tokenName = 'web', array $abilities = ['*']): TokenIssuer|string
     {
-        $user = $request->auth();
-
         if (! $user) {
             return TokenIssuer::AUTH_INVALID;
+        }
+
+        if (! method_exists($user, 'createToken')) {
+            throw new MustExtendHasApiTokens(get_class($user));
         }
 
         $token = $user->createToken($tokenName, $abilities, now()->addMinutes(config('sanctum-refresh.expiration')));
@@ -22,8 +27,10 @@ class IssueToken
         return new TokenIssuer($token);
     }
 
-    public function refreshToken(Request $request, string $tokenName = 'web', $abilities = ['*']): TokenIssuer|string
+    public function refreshToken(string $tokenName = 'web', $abilities = ['*']): TokenIssuer|string
     {
+        $request = request();
+
         $refreshToken = $request->hasCookie('refresh_token') ?
             $request->cookie('refresh_token') :
             $request->get('refresh_token');
