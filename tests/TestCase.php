@@ -6,8 +6,8 @@ use Albet\SanctumRefresh\Facades\SanctumRefresh;
 use Albet\SanctumRefresh\SanctumRefreshServiceProvider;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use function Orchestra\Testbench\artisan;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
@@ -26,9 +26,9 @@ class TestCase extends Orchestra
     {
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
     }
 
@@ -42,7 +42,7 @@ class TestCase extends Orchestra
     protected function getPackageAliases($app): array
     {
         return [
-            'SanctumRefresh' => SanctumRefresh::class
+            'SanctumRefresh' => SanctumRefresh::class,
         ];
     }
 
@@ -54,11 +54,11 @@ class TestCase extends Orchestra
     protected function defineDatabaseMigrations()
     {
         $this->loadLaravelMigrations();
-        $this->loadMigrationsFrom(__DIR__."/../vendor/laravel/sanctum/database/migrations");
+        $this->loadMigrationsFrom(__DIR__.'/../vendor/laravel/sanctum/database/migrations');
 
-        artisan($this, "db:seed", ['--class' => 'Albet\SanctumRefresh\Tests\UserSeeder']);
+        artisan($this, 'db:seed', ['--class' => 'Albet\SanctumRefresh\Tests\UserSeeder']);
 
-        $migration = include __DIR__ ."/../database/migrations/add_refresh_token_to_personal_access_token.php.stub";
+        $migration = include __DIR__.'/../database/migrations/add_refresh_token_to_personal_access_token.php.stub';
         $migration->up();
     }
 

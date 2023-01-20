@@ -4,13 +4,12 @@ use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Tests\Tester;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertTrue;
 
 uses(RefreshDatabase::class);
 
-it("Pruned Old Token successfully", function () {
+it('Pruned Old Token successfully', function () {
     Tester::generateFakeExprToken();
 
     Artisan::call('prune:token');
@@ -20,12 +19,12 @@ it("Pruned Old Token successfully", function () {
     assertNull($checkToken);
 });
 
-it("Not Prune Any Token", function() {
+it('Not Prune Any Token', function () {
     Tester::generateFineFakeToken();
 
     Artisan::call('prune:token');
 
     $checkToken = PersonalAccessToken::first();
 
-    assertTrue((bool)$checkToken);
+    assertTrue((bool) $checkToken);
 });
