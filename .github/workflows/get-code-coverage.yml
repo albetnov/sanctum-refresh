@@ -22,7 +22,7 @@ jobs:
         run: vendor/bin/pest --coverage
 
       - name: Copy coverage report to build folder
-        run: cp -r build ./coverage/
+        run: cp -r build/coverage ./coverage/
 
       - name: Deploy Coverage Report
         uses: peaceiris/actions-gh-pages@v3
