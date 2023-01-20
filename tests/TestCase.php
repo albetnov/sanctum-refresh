@@ -2,12 +2,17 @@
 
 namespace Albet\SanctumRefresh\Tests;
 
+use Albet\SanctumRefresh\Facades\SanctumRefresh;
 use Albet\SanctumRefresh\SanctumRefreshServiceProvider;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
+use function Orchestra\Testbench\artisan;
 
 class TestCase extends Orchestra
 {
+    protected $enablesPackageDiscoveries = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -17,20 +22,48 @@ class TestCase extends Orchestra
         );
     }
 
-    protected function getPackageProviders($app)
+    protected function defineEnvironment($app)
+    {
+        $app['config']->set('database.default', 'testbench');
+        $app['config']->set('database.connections.testbench', [
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => '',
+        ]);
+    }
+
+    protected function getPackageProviders($app): array
     {
         return [
             SanctumRefreshServiceProvider::class,
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    protected function getPackageAliases($app): array
     {
-        config()->set('database.default', 'testing');
+        return [
+            'SanctumRefresh' => SanctumRefresh::class
+        ];
+    }
 
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_sanctum-refresh_table.php.stub';
+    protected function defineRoutes($router)
+    {
+        \Albet\SanctumRefresh\SanctumRefresh::routes();
+    }
+
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadLaravelMigrations();
+        $this->loadMigrationsFrom(__DIR__."/../vendor/laravel/sanctum/database/migrations");
+
+        artisan($this, "db:seed", ['--class' => 'Albet\SanctumRefresh\Tests\UserSeeder']);
+
+        $migration = include __DIR__ ."/../database/migrations/add_refresh_token_to_personal_access_token.php.stub";
         $migration->up();
-        */
+    }
+
+    protected function resolveApplicationHttpKernel($app)
+    {
+        $app->singleton(Kernel::class, \Albet\SanctumRefresh\Tests\Kernel::class);
     }
 }

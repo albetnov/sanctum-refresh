@@ -17,12 +17,12 @@ class SanctumRefresh
         self::$middlewareMsg = $config['middlewareMessage'] ?? 'Refresh token is expired or invalid.';
 
         Route::controller(AuthController::class)->group(function () use ($config) {
-            if (! $config['refreshOnly']) {
+            if (! isset($config['refreshOnly'])) {
                 Route::post($config['loginUrl'] ?? '/login', 'login')
                     ->middleware($config['loginMiddleware'] ?? null);
             }
             Route::post($config['refreshUrl'] ?? '/refresh', 'refresh')
-                ->middleware(array_merge('checkRefreshToken', $config['refreshMiddleware']));
+                ->middleware(array_merge(['checkRefreshToken'], $config['refreshMiddleware'] ?? []));
         });
     }
 }
