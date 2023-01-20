@@ -19,10 +19,23 @@ class SanctumRefresh
         Route::controller(AuthController::class)->group(function () use ($config) {
             if (! isset($config['refreshOnly'])) {
                 Route::post($config['loginUrl'] ?? '/login', 'login')
+                    ->name('login')
                     ->middleware($config['loginMiddleware'] ?? null);
             }
+
+            $refreshMiddleware = ['checkRefreshToken'];
+
+            if ($config['refreshMiddleware'] ?? false) {
+                if (is_string($config['refreshMiddleware'])) {
+                    $refreshMiddleware[] = $config['refreshMiddleware'];
+                } else {
+                    $refreshMiddleware = array_merge($refreshMiddleware, $config['refreshMiddleware']);
+                }
+            }
+
             Route::post($config['refreshUrl'] ?? '/refresh', 'refresh')
-                ->middleware(array_merge(['checkRefreshToken'], $config['refreshMiddleware'] ?? []));
+                ->name('refresh')
+                ->middleware($refreshMiddleware);
         });
     }
 }

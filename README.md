@@ -117,10 +117,16 @@ Albet\SanctumRefresh\Services\Contracts\TokenIssuer::class
 
 ## Testing
 
-> The test has not yet been implemented. Please wait while I learn how to test package xD
+Run the tests:
 
 ```bash
 composer test
+```
+
+Figure out the code coverage:
+
+```bash
+composer test-coverage
 ```
 
 ## Changelog

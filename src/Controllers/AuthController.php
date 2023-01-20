@@ -32,6 +32,7 @@ class AuthController extends Controller
     {
         $newToken = $issueToken->refreshToken($request);
 
-        return response()->json($newToken->getToken()->toArray());
+        return response()->json($newToken->getToken()->except('cookie')->toArray())
+            ->withCookie($newToken->getToken()->only('cookie')->toArray()['cookie']);
     }
 }

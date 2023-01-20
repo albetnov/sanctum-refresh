@@ -46,11 +46,6 @@ class TestCase extends Orchestra
         ];
     }
 
-    protected function defineRoutes($router)
-    {
-        \Albet\SanctumRefresh\SanctumRefresh::routes();
-    }
-
     protected function defineDatabaseMigrations()
     {
         $this->loadLaravelMigrations();

@@ -22,7 +22,7 @@ class IssueToken
         return new TokenIssuer($token);
     }
 
-    public function refreshToken(Request $request): TokenIssuer
+    public function refreshToken(Request $request, string $tokenName = 'web', $abilities = ['*']): TokenIssuer|string
     {
         $refreshToken = $request->hasCookie('refresh_token') ?
             $request->cookie('refresh_token') :
@@ -35,7 +35,7 @@ class IssueToken
         $token = PersonalAccessToken::find($tokenId);
 
         // Regenerate token.
-        $newToken = $token->tokenable->createToken('web');
+        $newToken = $token->tokenable->createToken($tokenName, $abilities);
 
         // Delete current token (revoke refresh token)
         $token->delete();
