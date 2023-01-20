@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1674207552">
-  <project timestamp="1674207552">
+<coverage generated="1674209017">
+  <project timestamp="1674209017">
     <file name="/home/runner/work/sanctum-refresh/sanctum-refresh/src/Commands/PruneToken.php">
       <class name="Albet\SanctumRefresh\Commands\PruneToken" namespace="global">
         <metrics complexity="3" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="9" coveredelements="9"/>
@@ -20,21 +20,29 @@
       <class name="Albet\SanctumRefresh\Controllers\AuthController" namespace="global">
         <metrics complexity="3" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="12" elements="14" coveredelements="14"/>
       </class>
-      <line num="15" type="method" name="login" visibility="public" complexity="2" crap="2" count="5"/>
-      <line num="17" type="stmt" count="5"/>
-      <line num="19" type="stmt" count="5"/>
+      <line num="14" type="method" name="login" visibility="public" complexity="2" crap="2" count="5"/>
+      <line num="16" type="stmt" count="5"/>
+      <line num="18" type="stmt" count="5"/>
+      <line num="19" type="stmt" count="2"/>
       <line num="20" type="stmt" count="2"/>
       <line num="21" type="stmt" count="2"/>
-      <line num="22" type="stmt" count="2"/>
+      <line num="24" type="stmt" count="3"/>
       <line num="25" type="stmt" count="3"/>
       <line num="26" type="stmt" count="3"/>
       <line num="27" type="stmt" count="3"/>
-      <line num="28" type="stmt" count="3"/>
-      <line num="31" type="method" name="refresh" visibility="public" complexity="1" crap="1" count="2"/>
-      <line num="33" type="stmt" count="2"/>
+      <line num="30" type="method" name="refresh" visibility="public" complexity="1" crap="1" count="2"/>
+      <line num="32" type="stmt" count="2"/>
+      <line num="34" type="stmt" count="2"/>
       <line num="35" type="stmt" count="2"/>
-      <line num="36" type="stmt" count="2"/>
-      <metrics loc="39" ncloc="39" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="12" elements="14" coveredelements="14"/>
+      <metrics loc="38" ncloc="38" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="12" elements="14" coveredelements="14"/>
+    </file>
+    <file name="/home/runner/work/sanctum-refresh/sanctum-refresh/src/Exceptions/MustExtendHasApiTokens.php">
+      <class name="Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens" namespace="global">
+        <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
+      </class>
+      <line num="7" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="9" type="stmt" count="1"/>
+      <metrics loc="12" ncloc="12" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
     </file>
     <file name="/home/runner/work/sanctum-refresh/sanctum-refresh/src/Facades/SanctumRefresh.php">
       <class name="Albet\SanctumRefresh\Facades\SanctumRefresh" namespace="global">
@@ -147,15 +155,15 @@
       <class name="Albet\SanctumRefresh\SanctumRefreshServiceProvider" namespace="global">
         <metrics complexity="2" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="7" elements="9" coveredelements="9"/>
       </class>
-      <line num="13" type="method" name="configurePackage" visibility="public" complexity="1" crap="1" count="20"/>
-      <line num="20" type="stmt" count="20"/>
-      <line num="21" type="stmt" count="20"/>
-      <line num="22" type="stmt" count="20"/>
-      <line num="23" type="stmt" count="20"/>
-      <line num="24" type="stmt" count="20"/>
-      <line num="27" type="method" name="boot" visibility="public" complexity="1" crap="1" count="20"/>
-      <line num="29" type="stmt" count="20"/>
-      <line num="32" type="stmt" count="20"/>
+      <line num="13" type="method" name="configurePackage" visibility="public" complexity="1" crap="1" count="21"/>
+      <line num="20" type="stmt" count="21"/>
+      <line num="21" type="stmt" count="21"/>
+      <line num="22" type="stmt" count="21"/>
+      <line num="23" type="stmt" count="21"/>
+      <line num="24" type="stmt" count="21"/>
+      <line num="27" type="method" name="boot" visibility="public" complexity="1" crap="1" count="21"/>
+      <line num="29" type="stmt" count="21"/>
+      <line num="32" type="stmt" count="21"/>
       <metrics loc="35" ncloc="29" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="7" elements="9" coveredelements="9"/>
     </file>
     <file name="/home/runner/work/sanctum-refresh/sanctum-refresh/src/Services/Contracts/TokenIssuer.php">
@@ -184,25 +192,27 @@
     </file>
     <file name="/home/runner/work/sanctum-refresh/sanctum-refresh/src/Services/IssueToken.php">
       <class name="Albet\SanctumRefresh\Services\IssueToken" namespace="global">
-        <metrics complexity="4" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="13" elements="15" coveredelements="15"/>
+        <metrics complexity="5" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="15" elements="17" coveredelements="17"/>
       </class>
-      <line num="12" type="method" name="issue" visibility="public" complexity="2" crap="2" count="5"/>
-      <line num="14" type="stmt" count="5"/>
-      <line num="16" type="stmt" count="5"/>
-      <line num="17" type="stmt" count="2"/>
-      <line num="20" type="stmt" count="3"/>
-      <line num="22" type="stmt" count="3"/>
-      <line num="25" type="method" name="refreshToken" visibility="public" complexity="2" crap="2" count="2"/>
-      <line num="27" type="stmt" count="2"/>
-      <line num="28" type="stmt" count="1"/>
-      <line num="29" type="stmt" count="1"/>
+      <line num="15" type="method" name="issue" visibility="public" complexity="3" crap="3" count="6"/>
+      <line num="17" type="stmt" count="6"/>
+      <line num="18" type="stmt" count="2"/>
+      <line num="21" type="stmt" count="4"/>
+      <line num="22" type="stmt" count="1"/>
+      <line num="25" type="stmt" count="3"/>
+      <line num="27" type="stmt" count="3"/>
+      <line num="30" type="method" name="refreshToken" visibility="public" complexity="2" crap="2" count="2"/>
       <line num="32" type="stmt" count="2"/>
-      <line num="35" type="stmt" count="2"/>
-      <line num="38" type="stmt" count="2"/>
-      <line num="41" type="stmt" count="2"/>
-      <line num="43" type="stmt" count="2"/>
-      <metrics loc="46" ncloc="42" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="13" elements="15" coveredelements="15"/>
+      <line num="34" type="stmt" count="2"/>
+      <line num="35" type="stmt" count="1"/>
+      <line num="36" type="stmt" count="1"/>
+      <line num="39" type="stmt" count="2"/>
+      <line num="42" type="stmt" count="2"/>
+      <line num="45" type="stmt" count="2"/>
+      <line num="48" type="stmt" count="2"/>
+      <line num="50" type="stmt" count="2"/>
+      <metrics loc="53" ncloc="46" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="15" elements="17" coveredelements="17"/>
     </file>
-    <metrics files="12" loc="434" ncloc="382" classes="11" methods="18" coveredmethods="18" conditionals="0" coveredconditionals="0" statements="112" coveredstatements="112" elements="130" coveredelements="130"/>
+    <metrics files="13" loc="452" ncloc="397" classes="12" methods="19" coveredmethods="19" conditionals="0" coveredconditionals="0" statements="115" coveredstatements="115" elements="134" coveredelements="134"/>
   </project>
 </coverage>

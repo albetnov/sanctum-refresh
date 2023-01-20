@@ -1,17 +1,19 @@
 
 
 Code Coverage Report:       
-  2023-01-20 09:39:12       
+  2023-01-20 10:03:37       
                             
  Summary:                   
-  Classes: 100.00% (11/11)  
-  Methods: 100.00% (18/18)  
-  Lines:   100.00% (112/112)
+  Classes: 100.00% (12/12)  
+  Methods: 100.00% (19/19)  
+  Lines:   100.00% (115/115)
 
 Albet\SanctumRefresh\Commands\PruneToken
   Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  8/  8)
 Albet\SanctumRefresh\Controllers\AuthController
   Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 12/ 12)
+Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
 Albet\SanctumRefresh\Facades\SanctumRefresh
   Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
 Albet\SanctumRefresh\Helpers\Calculate
@@ -29,4 +31,4 @@ Albet\SanctumRefresh\SanctumRefreshServiceProvider
 Albet\SanctumRefresh\Services\Contracts\TokenIssuer
   Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 16/ 16)
 Albet\SanctumRefresh\Services\IssueToken
-  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 13/ 13)
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% ( 15/ 15)
