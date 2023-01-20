@@ -5,7 +5,7 @@ use Illuminate\Routing\RouteCollection;
 use Illuminate\Support\Facades\Route;
 use function PHPUnit\Framework\assertEquals;
 
-beforeEach(function() {
+beforeEach(function () {
     Route::setRoutes(new RouteCollection()); // Reset route every test.
 });
 
