@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="20" assertions="50" errors="0" warnings="0" failures="0" skipped="0" time="4.021538">
+    <testsuite name="P\Tests\SanctumRefreshTest" file="/home/runner/work/sanctum-refresh/sanctum-refresh/vendor/pestphp/pest/src/Factories/TestCaseFactory.php(223) : eval()'d code" tests="8" assertions="14" errors="0" warnings="0" failures="0" skipped="0" time="1.378121">
+      <testcase name="it only show refresh route only" assertions="2" time="0.312619"/>
+      <testcase name="it can custom loginUrl" assertions="1" time="0.160859"/>
+      <testcase name="it can custom refreshUrl" assertions="1" time="0.156516"/>
+      <testcase name="it can custom authedMessage from given config" assertions="1" time="0.149141"/>
+      <testcase name="it can add custom login middleware" assertions="2" time="0.147656"/>
+      <testcase name="it can add custom refresh middleware" assertions="4" time="0.146077"/>
+      <testcase name="it can custom middlewareMessage" assertions="1" time="0.155000"/>
+      <testcase name="it registered all the routes successfully" assertions="2" time="0.150253"/>
+    </testsuite>
+    <testsuite name="P\Tests\CheckRefreshTokenTest" file="/home/runner/work/sanctum-refresh/sanctum-refresh/vendor/pestphp/pest/src/Factories/TestCaseFactory.php(223) : eval()'d code" tests="2" assertions="2" errors="0" warnings="0" failures="0" skipped="0" time="0.357450">
+      <testcase name="it invalid refresh token given" assertions="1" time="0.186115"/>
+      <testcase name="it no refresh token provided" assertions="1" time="0.171335"/>
+    </testsuite>
+    <testsuite name="P\Tests\AuthControllerTest" file="/home/runner/work/sanctum-refresh/sanctum-refresh/vendor/pestphp/pest/src/Factories/TestCaseFactory.php(223) : eval()'d code" tests="6" assertions="30" errors="0" warnings="0" failures="0" skipped="0" time="1.658063">
+      <testcase name="it error user wrong credentials" assertions="3" time="0.381495"/>
+      <testcase name="it user can login" assertions="8" time="0.247206"/>
+      <testcase name="it failed refresh user token (invalid token given)" assertions="1" time="0.161049"/>
+      <testcase name="it can refresh user token (from cookie)" assertions="9" time="0.249677"/>
+      <testcase name="it use username instead of email" assertions="1" time="0.365020"/>
+      <testcase name="it can refresh user token (from json)" assertions="8" time="0.253616"/>
+    </testsuite>
+    <testsuite name="P\Tests\CalculateTest" file="/home/runner/work/sanctum-refresh/sanctum-refresh/vendor/pestphp/pest/src/Factories/TestCaseFactory.php(223) : eval()'d code" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="0" time="0.146636">
+      <testcase name="it Gives correct calculation" assertions="1" time="0.146636"/>
+    </testsuite>
+    <testsuite name="P\Tests\PruneTokenTest" file="/home/runner/work/sanctum-refresh/sanctum-refresh/vendor/pestphp/pest/src/Factories/TestCaseFactory.php(223) : eval()'d code" tests="2" assertions="2" errors="0" warnings="0" failures="0" skipped="0" time="0.327862">
+      <testcase name="it Not Prune Any Token" assertions="1" time="0.161295"/>
+      <testcase name="it Pruned Old Token successfully" assertions="1" time="0.166567"/>
+    </testsuite>
+    <testsuite name="P\Tests\FacadeSanctumRefreshTest" file="/home/runner/work/sanctum-refresh/sanctum-refresh/vendor/pestphp/pest/src/Factories/TestCaseFactory.php(223) : eval()'d code" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="0" time="0.153405">
+      <testcase name="it Ensure facade has a correct accessor" assertions="1" time="0.153405"/>
+    </testsuite>
+  </testsuite>
+</testsuites>
