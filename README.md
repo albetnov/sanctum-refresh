@@ -48,19 +48,19 @@ return [
 
 ## Usage
 
-Install the Middleware at `App\Http\Kernel` in `$routeMiddleware` add:
+Install the Middleware at `App\Http\Kernel` in `$routeMiddleware` by adding:
 
 ```php
 'checkRefreshToken' => Albet\SanctumRefresh\Middleware\CheckRefreshToken
 ```
 
-Optionally, you can register provided routes in `RouteServiceProvider`:
+Optionally, you can also register provided routes in `RouteServiceProvider`:
 
 ```php
 SanctumRefresh::routes();
 ```
 
-Customizing routes can be perfomed by putting associative array arguments.
+Customizing routes can be performed by putting an associative array arguments.
 Full config example:
 
 ```php
@@ -82,15 +82,17 @@ SanctumRefresh::routes([
 
 ## Going Manual
 
-You can manually perform login nor refresh using provided
+You can manually perform login or refresh using provided
 `LoginRequest->auth()` method.
 
-If you need refresh token expires in. Simply use Carbon:
+Above method support username or email as identifier. Simply provide one of those when hitting the API.
+
+If you need to know when refresh token expires. Simply use Carbon:
 ```php
 Carbon::parse($token->created_at)->addMinutes(config('sanctum-refresh.refresh_expiration'))
 ```
 
-Alternatively, SanctumRefresh provide an Helpers:
+Alternatively, SanctumRefresh also provide an Helpers:
 
 ```php
 use Albet\SanctumRefresh\Helpers\Calculate;
@@ -100,20 +102,69 @@ Calculate::estimateRefreshToken($token->created_at);
 
 Which simply a wrapper around `Carbon::parse`.
 
+> Not Advised
+
 Alternatively you can wrap around `AuthController::login()` method with your own controllers.
 For refresh, we highly recommend you to wrap `AuthController::refresh()` method.
 
-You can even have more control using Services provided by
+> Advised
+
+Rather than wrap around controller above, You can just use below services:
 
 ```php
 Albet\SanctumRefresh\Services\IssueToken::class
 ```
 
-and
+Allows you to generate both token and refresh token. Example:
+
+Generating Token
 
 ```php
-Albet\SanctumRefresh\Services\Contracts\TokenIssuer::class
+use Albet\SanctumRefresh\Services\IssueToken;
+
+$user = User::first(); // Tokenable Model
+
+(new IssueToken())->issue($user); // return TokenIssuer
 ```
+
+The method above will take `$user` as an model reference. This model must inherit `HasApiTokens`
+trait. The token will then be generated with given expiration provided not from 
+`sanctum.php` config file. But `sanctum-refresh.php`.
+
+Refreshing Token
+
+```php
+use Albet\SanctumRefresh\Services\IssueToken;
+
+(new IssueToken())->refreshToken(); // return TokenIssuer
+```
+
+The function above will return the new token for access and a brand new Refresh Token. It will also automatically
+revoke old token. Function above use `Request` under the hood. When using the service above, your API must be hit
+with `refresh-token` cookie.
+
+> When creating your own manual implementation of this package. It's highly recommended to deliver the cookie to the 
+> response. Example:
+> ```php
+> $tokenIssuer = $token->getToken()->toArray(); // $token is instance of TokenIssuer
+> 
+> response()->json([
+>     'message' => 'Authed Successfully!'
+> ])->withCookie($tokenIssuer['cookie']); // the collection already converted to array 
+> // using `toArray()`.
+> ```
+
+TokenIssuer Instance
+
+This class only a mapper for `IssueToken`. This class contains method:
+
+`getToken()`: which return collection that contain:
+
+- token > the primary access token
+- expires_in > the primary access token expiry minutes
+- refresh_token > the token to used to regain old access token.
+- refresh_token_expires_in > the refresh token expiry minutes
+- cookie > contain `cookie()` that contain `refresh-token`. Ready to be injected. 
 
 ## Testing
 
@@ -131,15 +182,12 @@ composer test-coverage
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+Please see [Changelog](CHANGELOG.md) for more information.
+
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+You are free to contribute to this project.
 
 ## Credits
 
