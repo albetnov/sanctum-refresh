@@ -1,7 +1,5 @@
 # Sanctum Refresh
 
-> This package is still under development. Awas meledak.
-
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/albetnov/sanctum-refresh.svg?style=flat-square)](https://packagist.org/packages/albetnov/sanctum-refresh)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/albetnov/sanctum-refresh/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/albetnov/sanctum-refresh/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/albetnov/sanctum-refresh/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/albetnov/sanctum-refresh/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
@@ -18,14 +16,14 @@ You can install the package via composer:
 composer require albetnov/sanctum-refresh
 ```
 
-You can publish and run the migrations with:
+Then you'll need to push and run the migration with:
 
 ```bash
 php artisan vendor:publish --tag="sanctum-refresh-migrations"
 php artisan migrate
 ```
 
-You can publish the config file with:
+You can also publish the config file with:
 
 ```bash
 php artisan vendor:publish --tag="sanctum-refresh-config"
@@ -83,7 +81,7 @@ SanctumRefresh::routes([
 
 ## Going Manual
 
-You can manually perform login or refresh using provided
+You can manually perform login using provided
 `LoginRequest->auth()` method.
 
 Above method support username or email as identifier. Simply provide one of those when hitting the API.
