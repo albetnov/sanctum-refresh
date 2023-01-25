@@ -7,6 +7,7 @@ use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Services\Contracts\TokenIssuer;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Albet\SanctumRefresh\Models\User;
 
 class IssueToken
 {
