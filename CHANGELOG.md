@@ -11,3 +11,8 @@ application.
 - Fix Known Bugs
 - Add Services (To allows customization)
 - New Helper to estimate refreshToken.
+
+## 1.0.2
+This release has been tested with real laravel application and works well.
+
+- Fix known bugs
