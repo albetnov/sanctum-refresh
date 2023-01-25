@@ -6,6 +6,7 @@ use Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens;
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Services\Contracts\TokenIssuer;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class IssueToken
 {
@@ -42,7 +43,8 @@ class IssueToken
         $token = PersonalAccessToken::find($tokenId);
 
         // Regenerate token.
-        $newToken = $token->tokenable->createToken($tokenName, $abilities);
+        $newToken = User::find($token->tokenable->id) // Use user find so auth instance generated from refreshToken is respecting $hidden property.
+                    ->createToken($tokenName, $abilities, now()->addMinutes(config('sanctum-refresh.expiration')));
 
         // Delete current token (revoke refresh token)
         $token->delete();
