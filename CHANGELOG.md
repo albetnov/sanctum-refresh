@@ -16,3 +16,7 @@ application.
 This release has been tested with real laravel application and works well.
 
 - Fix known bugs
+
+## 1.0.3
+
+- Remove unnecessary `User::find` queries when refreshing token.
