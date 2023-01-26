@@ -18,7 +18,7 @@ return [
     'sanctum_refresh' => [
         /**
          * Custom the api response message
-         * Map<string, string>
+         * array<string, string>
          */
         'message' => [
             // Authenticated successful message to be used by /login route
@@ -28,7 +28,7 @@ return [
         ],
         /**
          * Custom the routes behaviour
-         * Map<string, string>
+         * array<string, string>
          */
         'routes' => [
             // Only show refresh route (hide the login route)
@@ -36,7 +36,7 @@ return [
 
             /**
              * Custom the routes urls
-             * Map<string, string>
+             * array<string, string>
              */
             'urls' => [
                 'login' => '/login',
@@ -45,7 +45,7 @@ return [
 
             /**
              * Custom the routes middlewares
-             * Map<string, ?array>
+             * array<string, ?array>
              */
             'middlewares' => [
                 'login' => null,

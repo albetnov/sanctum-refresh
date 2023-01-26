@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        if (!Schema::hasTable('refresh_token')) {
-            Schema::create('refresh_token', function (Blueprint $table) {
+        if (!Schema::hasTable('refresh_tokens')) {
+            Schema::create('refresh_tokens', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId("token_id")->constrained('personal_access_tokens');
                 $table->string('token', 255);
