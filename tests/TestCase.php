@@ -53,7 +53,7 @@ class TestCase extends Orchestra
 
         artisan($this, 'db:seed', ['--class' => 'Albet\SanctumRefresh\Tests\UserSeeder']);
 
-        $migration = include __DIR__.'/../database/migrations/add_refresh_token_to_personal_access_token.php.stub';
+        $migration = include __DIR__.'/../database/migrations/create_refresh_tokens_table.php.stub';
         $migration->up();
     }
 

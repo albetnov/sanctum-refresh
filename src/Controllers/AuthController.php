@@ -33,7 +33,7 @@ class AuthController extends Controller
             'refresh_token' => $token->get('plain.refreshToken'),
             'refresh_token_expires_in' => $token->get('refreshToken')->expires_at,
         ])
-            ->withCookie(cookie('refresh_token', $token->get('plain.refreshToken')));
+            ->withCookie(cookie('refresh_token', $token->get('plain.refreshToken'), httpOnly: true));
     }
 
     public function refresh(): JsonResponse
@@ -58,6 +58,6 @@ class AuthController extends Controller
             'refresh_token' => $newToken->get('plain.refreshToken'),
             'refresh_token_expires_in' => $newToken->get('refreshToken')->expires_at,
         ])
-            ->withCookie(cookie('refresh_token', $newToken->get('plain.refreshToken')));
+            ->withCookie(cookie('refresh_token', $newToken->get('plain.refreshToken'), httpOnly: true));
     }
 }

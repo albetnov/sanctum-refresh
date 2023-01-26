@@ -3,6 +3,7 @@
 namespace Albet\SanctumRefresh;
 
 use Albet\SanctumRefresh\Commands\PruneToken;
+use Albet\SanctumRefresh\Exceptions\ConfigFileInvalid;
 use Illuminate\Routing\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -19,7 +20,7 @@ class SanctumRefreshServiceProvider extends PackageServiceProvider
         $package
             ->name('sanctum-refresh')
             ->hasConfigFile()
-            ->hasMigration('create_refresh_token_table')
+            ->hasMigration('create_refresh_tokens_table')
             ->hasCommand(PruneToken::class);
     }
 
