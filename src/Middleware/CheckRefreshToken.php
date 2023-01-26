@@ -2,8 +2,8 @@
 
 namespace Albet\SanctumRefresh\Middleware;
 
-use Albet\SanctumRefresh\Helpers\Calculate;
-use Albet\SanctumRefresh\Models\PersonalAccessToken;
+use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
+use Albet\SanctumRefresh\Helpers\CheckForRefreshToken;
 use Albet\SanctumRefresh\SanctumRefresh;
 use Closure;
 use Illuminate\Http\JsonResponse;
@@ -33,28 +33,15 @@ class CheckRefreshToken
             ], 400);
         }
 
-        // Parse tokenId
-        $tokenId = explode(':', $refreshToken)[0];
+        try {
+            CheckForRefreshToken::check($refreshToken);
 
-        // Check whenever the refresh token still valid or already expired
-        $tokenModel = PersonalAccessToken::find($tokenId);
-
-        if (! $tokenModel) {
+            return $next($request);
+        } catch (InvalidTokenException $e) {
             return response()->json([
                 'message' => SanctumRefresh::$middlewareMsg,
+                'reason' => $e->getMessage(),
             ], 400);
         }
-
-        $refreshExpr = Calculate::estimateRefreshToken($tokenModel->created_at);
-
-        // If the token is still valid, check if it matches the database token.
-        if ($refreshExpr->gt(now()) && $refreshToken === $tokenModel->plain_refresh_token) {
-            return $next($request);
-        }
-
-        // return bad request if the refresh token is neither invalid or expired.
-        return response()->json([
-            'message' => SanctumRefresh::$middlewareMsg,
-        ], 400);
     }
 }

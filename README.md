@@ -111,7 +111,7 @@ For refresh, we highly recommend you to wrap `AuthController::refresh()` method.
 Rather than wrap around controller above, You can just use below services:
 
 ```php
-Albet\SanctumRefresh\Services\IssueToken::class
+Albet\SanctumRefresh\Services\TokenIssuer::class
 ```
 
 Allows you to generate both token and refresh token. Example:
@@ -119,11 +119,11 @@ Allows you to generate both token and refresh token. Example:
 Generating Token
 
 ```php
-use Albet\SanctumRefresh\Services\IssueToken;
+use Albet\SanctumRefresh\Services\TokenIssuer;
 
 $user = User::first(); // Tokenable Model
 
-(new IssueToken())->issue($user); // return TokenIssuer
+(new TokenIssuer())->issue($user); // return Token
 ```
 
 The method above will take `$user` as an model reference. This model must inherit `HasApiTokens`
@@ -133,9 +133,9 @@ trait. The token will then be generated with given expiration provided not from
 Refreshing Token
 
 ```php
-use Albet\SanctumRefresh\Services\IssueToken;
+use Albet\SanctumRefresh\Services\TokenIssuer;
 
-(new IssueToken())->refreshToken(); // return TokenIssuer
+(new TokenIssuer())->refreshToken(); // return Token
 ```
 
 The function above will return the new token for access and a brand new Refresh Token. It will also automatically
@@ -145,7 +145,7 @@ with `refresh-token` cookie.
 > When creating your own manual implementation of this package. It's highly recommended to deliver the cookie to the 
 > response. Example:
 > ```php
-> $tokenIssuer = $token->getToken()->toArray(); // $token is instance of TokenIssuer
+> $tokenIssuer = $token->getToken()->toArray(); // $token is instance of Token
 > 
 > response()->json([
 >     'message' => 'Authed Successfully!'

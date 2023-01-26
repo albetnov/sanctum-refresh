@@ -37,7 +37,8 @@
     "autoload": {
         "psr-4": {
             "Albet\\SanctumRefresh\\": "src"
-        }
+        },
+        "files": ["src/Helpers/configBuilder.php"]
     },
     "autoload-dev": {
         "psr-4": {

@@ -2,8 +2,7 @@
 
 namespace Albet\SanctumRefresh\Commands;
 
-use Albet\SanctumRefresh\Helpers\Calculate;
-use Albet\SanctumRefresh\Models\PersonalAccessToken;
+use Albet\SanctumRefresh\Models\RefreshToken;
 use Illuminate\Console\Command;
 
 class PruneToken extends Command
@@ -14,19 +13,25 @@ class PruneToken extends Command
 
     public function handle(): int
     {
-        $tokens = PersonalAccessToken::get();
+        // Find refresh token that associated with Access Token.
+        // Figure out their expires_at and deletes them.
+        $tokens = RefreshToken::with('accessToken')
+            ->whereHas('accessToken', fn ($q) => $q->whereDate('expires_at', '<', now()))
+            ->whereDate('expires_at', '<', now())
+            ->get();
 
+        // iterates through the token
         foreach ($tokens as $token) {
-            $refreshExpr = Calculate::estimateRefreshToken($token->created_at);
-
-            if ($refreshExpr->lte(now())) {
+            // check if relationship match
+            if ($token->accessToken !== null) {
+                // delete both access token and refresh token
+                $tokenId = $token->accessToken->id;
                 $token->delete();
+                \Laravel\Sanctum\PersonalAccessToken::find($tokenId)->delete();
             }
         }
 
-        $this->info('Token cleared successfully!');
-
-        $this->info('All done');
+        $this->info('Token cleared.');
 
         return self::SUCCESS;
     }
