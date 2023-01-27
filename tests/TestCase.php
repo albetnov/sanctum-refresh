@@ -3,9 +3,11 @@
 namespace Albet\SanctumRefresh\Tests;
 
 use Albet\SanctumRefresh\Facades\SanctumRefresh;
+use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\SanctumRefreshServiceProvider;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Laravel\Sanctum\Sanctum;
 use function Orchestra\Testbench\artisan;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -20,6 +22,8 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Albet\\SanctumRefresh\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
+
+        \Albet\SanctumRefresh\SanctumRefresh::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 
     protected function defineEnvironment($app)

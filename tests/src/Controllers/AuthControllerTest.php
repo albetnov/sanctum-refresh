@@ -13,7 +13,6 @@ use function Pest\Laravel\withoutMiddleware;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    SanctumRefresh::usePersonalAccessTokenModel(PersonalAccessToken::class);
     SanctumRefresh::routes();
 });
 

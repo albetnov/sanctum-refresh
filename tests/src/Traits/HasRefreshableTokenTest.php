@@ -2,6 +2,7 @@
 
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
+use Albet\SanctumRefresh\SanctumRefresh;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 

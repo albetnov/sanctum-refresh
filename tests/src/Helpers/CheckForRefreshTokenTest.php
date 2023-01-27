@@ -7,10 +7,6 @@ use Albet\SanctumRefresh\SanctumRefresh;
 use Albet\SanctumRefresh\Services\TokenIssuer;
 use Illuminate\Support\Str;
 
-beforeEach(function () {
-    SanctumRefresh::usePersonalAccessTokenModel(\Albet\SanctumRefresh\Models\PersonalAccessToken::class);
-});
-
 it('verifies that the refresh token given is valid', function () {
     $token = TokenIssuer::issue(User::first());
 

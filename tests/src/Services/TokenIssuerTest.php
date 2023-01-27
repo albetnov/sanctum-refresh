@@ -13,10 +13,6 @@ use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    SanctumRefresh::usePersonalAccessTokenModel(\Albet\SanctumRefresh\Models\PersonalAccessToken::class);
-});
-
 function tokenKeys(): array
 {
     return ['accessToken', 'refreshToken', 'plain'];

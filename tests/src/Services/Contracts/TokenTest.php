@@ -6,10 +6,6 @@ use Albet\SanctumRefresh\SanctumRefresh;
 use Albet\SanctumRefresh\Services\Contracts\Token;
 use Illuminate\Support\Str;
 
-beforeEach(function () {
-    SanctumRefresh::usePersonalAccessTokenModel(\Albet\SanctumRefresh\Models\PersonalAccessToken::class);
-});
-
 it('Return AUTH_INVALID string', function () {
     $string = 'AUTH_INVALID';
 

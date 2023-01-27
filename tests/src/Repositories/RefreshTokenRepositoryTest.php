@@ -10,10 +10,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    SanctumRefresh::usePersonalAccessTokenModel(PersonalAccessToken::class);
-});
-
 it('can revoke token from given valid token id', function () {
     User::first()->createTokenWithRefresh('web');
 
