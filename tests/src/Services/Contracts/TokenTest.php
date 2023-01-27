@@ -2,7 +2,6 @@
 
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
-use Albet\SanctumRefresh\SanctumRefresh;
 use Albet\SanctumRefresh\Services\Contracts\Token;
 use Illuminate\Support\Str;
 

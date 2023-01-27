@@ -2,7 +2,6 @@
 
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
-use Albet\SanctumRefresh\SanctumRefresh;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;

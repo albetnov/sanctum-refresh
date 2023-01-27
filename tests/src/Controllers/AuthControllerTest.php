@@ -1,7 +1,6 @@
 <?php
 
 use Albet\SanctumRefresh\Middleware\CheckRefreshToken;
-use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\SanctumRefresh;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;

@@ -7,7 +7,6 @@ use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\SanctumRefreshServiceProvider;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Laravel\Sanctum\Sanctum;
 use function Orchestra\Testbench\artisan;
 use Orchestra\Testbench\TestCase as Orchestra;
 

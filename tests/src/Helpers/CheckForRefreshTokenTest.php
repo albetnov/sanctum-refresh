@@ -3,7 +3,6 @@
 use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Helpers\CheckForRefreshToken;
 use Albet\SanctumRefresh\Models\User;
-use Albet\SanctumRefresh\SanctumRefresh;
 use Albet\SanctumRefresh\Services\TokenIssuer;
 use Illuminate\Support\Str;
 
