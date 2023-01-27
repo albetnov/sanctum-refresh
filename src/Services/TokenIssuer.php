@@ -55,7 +55,9 @@ class TokenIssuer
         $tokenId = explode('|', $refreshToken)[0];
 
         // Find token from given id
-        $token = RefreshToken::with('accessToken')->find($tokenId);
+        $token = RefreshToken::with('accessToken')
+            ->where('expires_at', '>', now())
+            ->find($tokenId);
 
         if (! $token) {
             throw new InvalidTokenException();

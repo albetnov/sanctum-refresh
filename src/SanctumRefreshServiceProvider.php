@@ -29,9 +29,5 @@ class SanctumRefreshServiceProvider extends PackageServiceProvider
         parent::boot();
 
         SanctumRefresh::boot();
-
-        Route::macro('sanctumRefreshRoutes', function () {
-            SanctumRefresh::routes();
-        });
     }
 }

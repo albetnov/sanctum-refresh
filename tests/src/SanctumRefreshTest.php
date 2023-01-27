@@ -5,7 +5,6 @@ use Albet\SanctumRefresh\SanctumRefresh;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Support\Facades\Route;
-use Laravel\Sanctum\Sanctum;
 use function PHPUnit\Framework\assertEquals;
 
 beforeEach(function () {
@@ -100,16 +99,23 @@ it('only show refresh route only', function () {
         ->and(isset(Route::getRoutes()->getRoutesByMethod(['POST'])['POST']['login']))->toBeFalse();
 });
 
-it("can change personal access token model", function() {
-    class PersonalAccessToken extends Model {}
+it("can change personal access token model", function () {
+    class PersonalAccessToken extends Model
+    {
+    }
 
     SanctumRefresh::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
     expect(SanctumRefresh::$model)->toBe(PersonalAccessToken::class);
 });
 
-it("cannot change personal access token model (invalid class)", function() {
-    class FakePersonalAccessToken {}
+it("cannot change personal access token model (invalid class)", function () {
+    class FakePersonalAccessToken
+    {
+    }
+
+    SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class);
+
     expect(SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class))
         ->toThrow(InvalidModelException::class);
 })->throws(InvalidModelException::class);

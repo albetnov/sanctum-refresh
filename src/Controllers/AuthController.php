@@ -22,18 +22,18 @@ class AuthController extends Controller
 
         if ($token === Token::AUTH_INVALID) {
             return response()->json([
-                'message' => 'Invalid Cresidentials!',
-            ], 403);
+                'message' => 'Invalid Credentials!',
+            ], 401);
         }
 
         return response()->json([
             'message' => SanctumRefresh::$authedMessage,
-            'token' => $token->get('plain.accessToken'),
+            'token' => $token->get('plain')['accessToken'],
             'token_expires_in' => $token->get('accessToken')->expires_at,
-            'refresh_token' => $token->get('plain.refreshToken'),
+            'refresh_token' => $token->get('plain')['refreshToken'],
             'refresh_token_expires_in' => $token->get('refreshToken')->expires_at,
         ])
-            ->withCookie(cookie('refresh_token', $token->get('plain.refreshToken'), httpOnly: true));
+            ->withCookie(cookie('refresh_token', $token->get('plain')['refreshToken'], httpOnly: true));
     }
 
     public function refresh(): JsonResponse
@@ -53,11 +53,11 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'token' => $newToken->get('plain.accessToken'),
+            'token' => $newToken->get('plain')['accessToken'],
             'token_expires_in' => $newToken->get('accessToken')->expires_at,
-            'refresh_token' => $newToken->get('plain.refreshToken'),
+            'refresh_token' => $newToken->get('plain')['refreshToken'],
             'refresh_token_expires_in' => $newToken->get('refreshToken')->expires_at,
         ])
-            ->withCookie(cookie('refresh_token', $newToken->get('plain.refreshToken'), httpOnly: true));
+            ->withCookie(cookie('refresh_token', $newToken->get('plain')['refreshToken'], httpOnly: true));
     }
 }

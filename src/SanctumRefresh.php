@@ -30,10 +30,10 @@ class SanctumRefresh
         if (class_exists($model)) {
             $checkModel = new ReflectionClass($model);
             if (
-                $checkModel->getParentClass() === false ||
-                $checkModel->getParentClass()->name === Model::class ||
+                $checkModel->getParentClass() !== false &&
+                ($checkModel->getParentClass()->name === Model::class ||
                 $checkModel->getParentClass()->name === PersonalAccessToken::class ||
-                $checkModel->getParentClass()->name === \Albet\SanctumRefresh\Models\PersonalAccessToken::class
+                $checkModel->getParentClass()->name === \Albet\SanctumRefresh\Models\PersonalAccessToken::class)
             ) {
                 Sanctum::usePersonalAccessTokenModel($model);
                 self::$model = $model;
