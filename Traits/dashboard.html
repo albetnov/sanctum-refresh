@@ -2,7 +2,7 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
-  <title>Dashboard for /home/runner/work/sanctum-refresh/sanctum-refresh/src/Middleware</title>
+  <title>Dashboard for /home/runner/work/sanctum-refresh/sanctum-refresh/src/Traits</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../_css/bootstrap.min.css?v=9.2.24" rel="stylesheet" type="text/css">
   <link href="../_css/nv.d3.min.css?v=9.2.24" rel="stylesheet" type="text/css">
@@ -17,7 +17,7 @@
       <nav aria-label="breadcrumb">
        <ol class="breadcrumb">
          <li class="breadcrumb-item"><a href="../index.html">/home/runner/work/sanctum-refresh/sanctum-refresh/src</a></li>
-         <li class="breadcrumb-item"><a href="index.html">Middleware</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Traits</a></li>
          <li class="breadcrumb-item active">(Dashboard)</li>
 
        </ol>
@@ -155,7 +155,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#classCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,1], "Class Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,2], "Class Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -173,7 +173,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#methodCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,1], "Method Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,3], "Method Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -223,7 +223,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Cyclomatic Complexity');
 
     d3.select('#classComplexity svg')
-      .datum(getComplexityData([[100,4,"<a href=\"CheckRefreshToken.php.html#14\">Albet\\SanctumRefresh\\Middleware\\CheckRefreshToken<\/a>"]], 'Class Complexity'))
+      .datum(getComplexityData([[100,2,"<a href=\"HasRefreshable.php.html#10\">Albet\\SanctumRefresh\\Traits\\HasRefreshable<\/a>"],[100,5,"<a href=\"HasRefreshableToken.php.html#10\">Albet\\SanctumRefresh\\Traits\\HasRefreshableToken<\/a>"]], 'Class Complexity'))
       .transition()
       .duration(500)
       .call(chart);
@@ -247,7 +247,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Method Complexity');
 
     d3.select('#methodComplexity svg')
-      .datum(getComplexityData([[100,4,"<a href=\"CheckRefreshToken.php.html#23\">Albet\\SanctumRefresh\\Middleware\\CheckRefreshToken::handle<\/a>"]], 'Method Complexity'))
+      .datum(getComplexityData([[100,2,"<a href=\"HasRefreshable.php.html#15\">Albet\\SanctumRefresh\\Traits\\HasRefreshable::refreshToken<\/a>"],[100,1,"<a href=\"HasRefreshableToken.php.html#15\">Albet\\SanctumRefresh\\Traits\\HasRefreshableToken::createTokenWithRefresh<\/a>"],[100,4,"<a href=\"HasRefreshableToken.php.html#20\">Albet\\SanctumRefresh\\Traits\\HasRefreshableToken::revokeBothToken<\/a>"]], 'Method Complexity'))
       .transition()
       .duration(500)
       .call(chart);
