@@ -2,6 +2,7 @@
 
 namespace Albet\SanctumRefresh\Models;
 
+use Albet\SanctumRefresh\Traits\HasRefreshableToken;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -10,5 +11,5 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Model
 {
-    use HasApiTokens;
+    use HasApiTokens, HasRefreshableToken;
 }

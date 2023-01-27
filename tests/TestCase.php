@@ -3,6 +3,7 @@
 namespace Albet\SanctumRefresh\Tests;
 
 use Albet\SanctumRefresh\Facades\SanctumRefresh;
+use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\SanctumRefreshServiceProvider;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -20,6 +21,8 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Albet\\SanctumRefresh\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
+
+        \Albet\SanctumRefresh\SanctumRefresh::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 
     protected function defineEnvironment($app)
@@ -53,7 +56,7 @@ class TestCase extends Orchestra
 
         artisan($this, 'db:seed', ['--class' => 'Albet\SanctumRefresh\Tests\UserSeeder']);
 
-        $migration = include __DIR__.'/../database/migrations/add_refresh_token_to_personal_access_token.php.stub';
+        $migration = include __DIR__.'/../database/migrations/create_refresh_tokens_table.php.stub';
         $migration->up();
     }
 
