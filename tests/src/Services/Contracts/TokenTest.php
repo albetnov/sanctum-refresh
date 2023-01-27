@@ -6,7 +6,7 @@ use Albet\SanctumRefresh\SanctumRefresh;
 use Albet\SanctumRefresh\Services\Contracts\Token;
 use Illuminate\Support\Str;
 
-beforeEach(function() {
+beforeEach(function () {
     SanctumRefresh::usePersonalAccessTokenModel(\Albet\SanctumRefresh\Models\PersonalAccessToken::class);
 });
 
