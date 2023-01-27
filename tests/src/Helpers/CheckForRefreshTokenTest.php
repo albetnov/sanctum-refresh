@@ -7,35 +7,35 @@ use Albet\SanctumRefresh\SanctumRefresh;
 use Albet\SanctumRefresh\Services\TokenIssuer;
 use Illuminate\Support\Str;
 
-beforeEach(function() {
+beforeEach(function () {
     SanctumRefresh::usePersonalAccessTokenModel(\Albet\SanctumRefresh\Models\PersonalAccessToken::class);
 });
 
-it("verifies that the refresh token given is valid", function() {
+it('verifies that the refresh token given is valid', function () {
     $token = TokenIssuer::issue(User::first());
 
-    $refreshToken = $token->get('plain')["refreshToken"];
+    $refreshToken = $token->get('plain')['refreshToken'];
 
     expect(CheckForRefreshToken::check($refreshToken))->toBeTrue();
 });
 
-it("verifies that the refresh token given is invalid", function() {
-    $refreshToken = "random | string";
+it('verifies that the refresh token given is invalid', function () {
+    $refreshToken = 'random | string';
 
     expect(CheckForRefreshToken::check($refreshToken))->toThrow(InvalidTokenException::class);
 })->throws(InvalidTokenException::class);
 
-it("verifies that the refresh token given is invalid (no indicator)", function() {
-    $refreshToken = "random string";
+it('verifies that the refresh token given is invalid (no indicator)', function () {
+    $refreshToken = 'random string';
 
     expect(CheckForRefreshToken::check($refreshToken))->toThrow(InvalidTokenException::class);
 })->throws(InvalidTokenException::class);
 
-it("verifies that the token is invalid even id is correct", function() {
+it('verifies that the token is invalid even id is correct', function () {
     $token = TokenIssuer::issue(User::first());
 
-    $refreshTokenId = $token->get("refreshToken")->id;
-    $refreshToken = $refreshTokenId ."|".Str::random(40);
+    $refreshTokenId = $token->get('refreshToken')->id;
+    $refreshToken = $refreshTokenId.'|'.Str::random(40);
 
     expect(CheckForRefreshToken::check($refreshToken))->toThrow(InvalidTokenException::class);
 })->throws(InvalidTokenException::class);

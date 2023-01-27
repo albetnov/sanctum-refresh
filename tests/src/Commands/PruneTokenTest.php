@@ -2,13 +2,13 @@
 
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
-it("Can prune token successfully (both expired)", function () {
+it('Can prune token successfully (both expired)', function () {
     DB::table('personal_access_tokens')->insert([
         'id' => 1,
         'name' => 'test',
@@ -24,7 +24,7 @@ it("Can prune token successfully (both expired)", function () {
     RefreshToken::create([
         'token_id' => $token->id,
         'token' => Str::random(40),
-        'expires_at' => now()->subMinutes(5)
+        'expires_at' => now()->subMinutes(5),
     ]);
 
     Artisan::call('prune:token');
@@ -33,7 +33,7 @@ it("Can prune token successfully (both expired)", function () {
     ->and(RefreshToken::first())->toBeNull();
 });
 
-it("Didn't prune any token due to expiration (access not expired)", function() {
+it("Didn't prune any token due to expiration (access not expired)", function () {
     DB::table('personal_access_tokens')->insert([
         'id' => 1,
         'name' => 'test',
@@ -49,14 +49,14 @@ it("Didn't prune any token due to expiration (access not expired)", function() {
     RefreshToken::create([
         'token_id' => $token->id,
         'token' => Str::random(40),
-        'expires_at' => now()->subMinutes(5)
+        'expires_at' => now()->subMinutes(5),
     ]);
 
     expect(PersonalAccessToken::first())->not->toBeNull()
         ->and(RefreshToken::class)->not->toBeNull();
 });
 
-it("Didn't prune any token due to expiration (refresh not expired)", function() {
+it("Didn't prune any token due to expiration (refresh not expired)", function () {
     DB::table('personal_access_tokens')->insert([
         'id' => 1,
         'name' => 'test',
@@ -72,7 +72,7 @@ it("Didn't prune any token due to expiration (refresh not expired)", function() 
     RefreshToken::create([
         'token_id' => $token->id,
         'token' => Str::random(40),
-        'expires_at' => now()->addMinutes(5)
+        'expires_at' => now()->addMinutes(5),
     ]);
 
     expect(PersonalAccessToken::first())->not->toBeNull()

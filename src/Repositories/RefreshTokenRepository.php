@@ -11,8 +11,9 @@ class RefreshTokenRepository
     public function revokeRefreshTokenFromTokenId(int $tokenId): bool
     {
         $find = RefreshToken::where('token_id', $tokenId)->first();
-        if($find) {
+        if ($find) {
             $find->delete();
+
             return true;
         }
 
@@ -24,11 +25,11 @@ class RefreshTokenRepository
      */
     public function revokeRefreshTokenFromToken(string $plainRefreshToken): void
     {
-       CheckForRefreshToken::check($plainRefreshToken);
+        CheckForRefreshToken::check($plainRefreshToken);
 
-       $findTokenId = explode("|", $plainRefreshToken);
-       $findTokenId = $findTokenId[array_key_first($findTokenId)];
+        $findTokenId = explode('|', $plainRefreshToken);
+        $findTokenId = $findTokenId[array_key_first($findTokenId)];
 
-       RefreshToken::find($findTokenId)->delete();
+        RefreshToken::find($findTokenId)->delete();
     }
 }

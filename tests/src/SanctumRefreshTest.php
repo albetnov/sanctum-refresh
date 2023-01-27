@@ -99,7 +99,7 @@ it('only show refresh route only', function () {
         ->and(isset(Route::getRoutes()->getRoutesByMethod(['POST'])['POST']['login']))->toBeFalse();
 });
 
-it("can change personal access token model", function () {
+it('can change personal access token model', function () {
     class PersonalAccessToken extends Model
     {
     }
@@ -109,7 +109,7 @@ it("can change personal access token model", function () {
     expect(SanctumRefresh::$model)->toBe(PersonalAccessToken::class);
 });
 
-it("cannot change personal access token model (invalid class)", function () {
+it('cannot change personal access token model (invalid class)', function () {
     class FakePersonalAccessToken
     {
     }

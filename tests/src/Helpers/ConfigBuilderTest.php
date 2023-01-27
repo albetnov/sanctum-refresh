@@ -1,6 +1,6 @@
 <?php
 
-it("Generate the correct arrays", function () {
+it('Generate the correct arrays', function () {
     $abilities = ['*'];
     $tokenExpiresAt = now()->addMinutes(20);
     $refreshTokenExpiresAt = now()->addHour();
@@ -17,7 +17,7 @@ it("Generate the correct arrays", function () {
         ->and($result['refresh_expires_at'])->toEqual($refreshTokenExpiresAt);
 });
 
-it("has default value anyway", function() {
+it('has default value anyway', function () {
     $result = config_builder();
 
     expect($result)->toHaveKeys(['abilities', 'token_expires_at', 'refresh_expires_at']);

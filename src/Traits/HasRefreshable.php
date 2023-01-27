@@ -14,7 +14,7 @@ trait HasRefreshable
      */
     public function refreshToken(): HasOne
     {
-        if(!method_exists($this, "hasOne")) {
+        if (! method_exists($this, 'hasOne')) {
             throw new InvalidModelException((new ReflectionClass($this))->name);
         }
 

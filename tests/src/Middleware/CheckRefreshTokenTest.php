@@ -11,10 +11,10 @@ beforeEach(function () {
     SanctumRefresh::routes();
 });
 
-it("no refresh token given", function () {
-    $response = post("/refresh");
+it('no refresh token given', function () {
+    $response = post('/refresh');
 
     $response->assertStatus(400)
-        ->assertJson(fn(AssertableJson $json) => $json
+        ->assertJson(fn (AssertableJson $json) => $json
             ->where('message', SanctumRefresh::$middlewareMsg));
 });

@@ -3,8 +3,6 @@
 namespace Albet\SanctumRefresh;
 
 use Albet\SanctumRefresh\Commands\PruneToken;
-use Albet\SanctumRefresh\Exceptions\ConfigFileInvalid;
-use Illuminate\Routing\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

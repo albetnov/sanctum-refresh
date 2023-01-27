@@ -27,7 +27,7 @@ class CheckForRefreshToken
 
         $token = RefreshToken::find($tokenId);
 
-        if (! $token || ! hash_equals($token->token, hash("sha256", $userToken)) || Carbon::parse($token->expires_at)->lt(now())) {
+        if (! $token || ! hash_equals($token->token, hash('sha256', $userToken)) || Carbon::parse($token->expires_at)->lt(now())) {
             throw new InvalidTokenException();
         }
 

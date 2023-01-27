@@ -54,7 +54,7 @@ class SanctumRefresh
     public static function routes(): void
     {
         Route::controller(AuthController::class)->group(function () {
-            if (!config('sanctum-refresh.sanctum_refresh.routes.refreshOnly')) {
+            if (! config('sanctum-refresh.sanctum_refresh.routes.refreshOnly')) {
                 Route::post(config('sanctum-refresh.sanctum_refresh.routes.urls.login'), 'login')
                     ->name('login')
                     ->middleware(config('sanctum-refresh.sanctum_refresh.routes.middlewares.login'));

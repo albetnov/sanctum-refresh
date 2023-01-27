@@ -2,16 +2,13 @@
 
 namespace Albet\SanctumRefresh\Traits;
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens;
 use Albet\SanctumRefresh\Repositories\RefreshTokenRepository;
 use Albet\SanctumRefresh\Services\TokenIssuer;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 trait HasRefreshableToken
 {
-
     /**
      * @throws MustExtendHasApiTokens
      */
@@ -26,9 +23,11 @@ trait HasRefreshableToken
 
         if ($accTokens) {
             foreach ($accTokens as $accToken) {
+                // @phpstan-ignore-next-line
                 if ($accToken->id) {
                     (new RefreshTokenRepository())->revokeRefreshTokenFromTokenId($accToken->id);
                     $accToken->delete();
+
                     return true;
                 }
             }
