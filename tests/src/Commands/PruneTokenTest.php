@@ -4,6 +4,7 @@ use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
@@ -30,7 +31,7 @@ it('Can prune token successfully (both expired)', function () {
     Artisan::call('prune:token');
 
     expect(PersonalAccessToken::first())->toBeNull()
-    ->and(RefreshToken::first())->toBeNull();
+        ->and(RefreshToken::first())->toBeNull();
 });
 
 it("Didn't prune any token due to expiration (access not expired)", function () {

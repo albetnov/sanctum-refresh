@@ -2,19 +2,20 @@
 
 namespace Albet\SanctumRefresh\Traits;
 
-use Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens;
+use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
 use Albet\SanctumRefresh\Repositories\RefreshTokenRepository;
+use Albet\SanctumRefresh\Services\Factories\Token;
+use Albet\SanctumRefresh\Services\Factories\TokenConfig;
 use Albet\SanctumRefresh\Services\TokenIssuer;
-use Illuminate\Support\Collection;
 
 trait HasRefreshableToken
 {
     /**
-     * @throws MustExtendHasApiTokens
+     * @throws MustHaveTraitException
      */
-    public function createTokenWithRefresh(string $name, array $config = []): Collection
+    public function createTokenWithRefresh(string $name, TokenConfig $tokenConfig = new TokenConfig()): Token
     {
-        return TokenIssuer::issue($this, $name, $config);
+        return TokenIssuer::issue($this, $name, $tokenConfig);
     }
 
     public function revokeBothToken(): bool

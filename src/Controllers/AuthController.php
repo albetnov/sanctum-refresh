@@ -6,9 +6,10 @@ use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens;
 use Albet\SanctumRefresh\Requests\LoginRequest;
 use Albet\SanctumRefresh\SanctumRefresh;
-use Albet\SanctumRefresh\Services\Contracts\Token;
+use Albet\SanctumRefresh\Services\Factories\Token;
 use Albet\SanctumRefresh\Services\TokenIssuer;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class AuthController extends Controller
@@ -18,28 +19,28 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $token = TokenIssuer::issue($request->auth());
+        $user = $request->auth();
 
-        if ($token === Token::AUTH_INVALID) {
+        if (!$user) {
             return response()->json([
                 'message' => 'Invalid Credentials!',
             ], 401);
         }
 
+        $token = TokenIssuer::issue($user);
+
+
         return response()->json([
             'message' => SanctumRefresh::$authedMessage,
-            'token' => $token->get('plain')['accessToken'],
-            'token_expires_in' => $token->get('accessToken')->expires_at,
-            'refresh_token' => $token->get('plain')['refreshToken'],
-            'refresh_token_expires_in' => $token->get('refreshToken')->expires_at,
-        ])
-            ->withCookie(cookie('refresh_token', $token->get('plain')['refreshToken'], httpOnly: true));
+            'token' => $token->token->plainTextToken,
+            'token_expires_in' => $token->token->accessToken->expires_at,
+            'refresh_token' => $token->plainRefreshToken,
+            'refresh_token_expires_in' => $token->refreshToken->expires_at,
+        ])->withCookie(cookie('refresh_token', $token->plainRefreshToken, httpOnly: true));
     }
 
-    public function refresh(): JsonResponse
+    public function refresh(Request $request): JsonResponse
     {
-        $request = request();
-
         $refreshToken = $request->hasCookie('refresh_token') ?
             $request->cookie('refresh_token') :
             $request->get('refresh_token');
@@ -53,11 +54,10 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'token' => $newToken->get('plain')['accessToken'],
-            'token_expires_in' => $newToken->get('accessToken')->expires_at,
-            'refresh_token' => $newToken->get('plain')['refreshToken'],
-            'refresh_token_expires_in' => $newToken->get('refreshToken')->expires_at,
-        ])
-            ->withCookie(cookie('refresh_token', $newToken->get('plain')['refreshToken'], httpOnly: true));
+            'token' => $newToken->token->plainTextToken,
+            'token_expires_in' => $newToken->token->accessToken->expires_at,
+            'refresh_token' => $newToken->plainRefreshToken,
+            'refresh_token_expires_in' => $newToken->refreshToken->expires_at,
+        ])->withCookie(cookie('refresh_token',  $newToken->plainRefreshToken, httpOnly: true));
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 it('verifies that the refresh token given is valid', function () {
     $token = TokenIssuer::issue(User::first());
 
-    $refreshToken = $token->get('plain')['refreshToken'];
+    $refreshToken = $token->plainRefreshToken;
 
     expect(CheckForRefreshToken::check($refreshToken))->toBeTrue();
 });
@@ -29,8 +29,8 @@ it('verifies that the refresh token given is invalid (no indicator)', function (
 it('verifies that the token is invalid even id is correct', function () {
     $token = TokenIssuer::issue(User::first());
 
-    $refreshTokenId = $token->get('refreshToken')->id;
-    $refreshToken = $refreshTokenId.'|'.Str::random(40);
+    $refreshTokenId = $token->refreshToken->id;
+    $refreshToken = $refreshTokenId . '|' . Str::random(40);
 
     expect(CheckForRefreshToken::check($refreshToken))->toThrow(InvalidTokenException::class);
 })->throws(InvalidTokenException::class);

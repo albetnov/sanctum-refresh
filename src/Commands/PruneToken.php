@@ -24,10 +24,8 @@ class PruneToken extends Command
         foreach ($tokens as $token) {
             // check if relationship match
             if ($token->accessToken !== null) {
-                // delete both access token and refresh token
-                $tokenId = $token->accessToken->id;
+                $token->accessToken->delete();
                 $token->delete();
-                \Laravel\Sanctum\PersonalAccessToken::find($tokenId)->delete();
             }
         }
 
