@@ -6,7 +6,6 @@ use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens;
 use Albet\SanctumRefresh\Requests\LoginRequest;
 use Albet\SanctumRefresh\SanctumRefresh;
-use Albet\SanctumRefresh\Services\Factories\Token;
 use Albet\SanctumRefresh\Services\TokenIssuer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,14 +20,13 @@ class AuthController extends Controller
     {
         $user = $request->auth();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'Invalid Credentials!',
             ], 401);
         }
 
         $token = TokenIssuer::issue($user);
-
 
         return response()->json([
             'message' => SanctumRefresh::$authedMessage,
@@ -58,6 +56,6 @@ class AuthController extends Controller
             'token_expires_in' => $newToken->token->accessToken->expires_at,
             'refresh_token' => $newToken->plainRefreshToken,
             'refresh_token_expires_in' => $newToken->refreshToken->expires_at,
-        ])->withCookie(cookie('refresh_token',  $newToken->plainRefreshToken, httpOnly: true));
+        ])->withCookie(cookie('refresh_token', $newToken->plainRefreshToken, httpOnly: true));
     }
 }

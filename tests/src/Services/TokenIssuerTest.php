@@ -46,7 +46,7 @@ it('throw invalid token when token already expired', function () {
         'expires_at' => now()->subMinutes(30),
     ])->id;
 
-    $fakeTokenable = $id . '|' . $fakeToken;
+    $fakeTokenable = $id.'|'.$fakeToken;
 
     expect(TokenIssuer::refreshToken($fakeTokenable))->toThrow(InvalidTokenException::class);
 })->throws(InvalidTokenException::class);

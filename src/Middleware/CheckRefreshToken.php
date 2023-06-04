@@ -15,10 +15,6 @@ class CheckRefreshToken
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  Request  $request
-     * @param  Closure  $next
-     * @return RedirectResponse|Response|JsonResponse
      */
     public function handle(Request $request, Closure $next): RedirectResponse|Response|JsonResponse
     {

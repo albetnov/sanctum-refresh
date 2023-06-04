@@ -20,7 +20,7 @@ class TokenIssuer
     {
         $tokenableTraits = array_values(class_uses($tokenable));
 
-        if (!in_array(HasApiTokens::class, $tokenableTraits)) {
+        if (! in_array(HasApiTokens::class, $tokenableTraits)) {
             throw new MustHaveTraitException(get_class($tokenable), HasApiTokens::class);
         }
 
@@ -46,7 +46,7 @@ class TokenIssuer
      */
     public static function refreshToken(string $refreshToken, string $tokenName = 'web', TokenConfig $tokenConfig = new TokenConfig()): Token
     {
-        if (!str_contains($refreshToken, '|')) {
+        if (! str_contains($refreshToken, '|')) {
             throw new InvalidTokenException();
         }
 
@@ -58,7 +58,7 @@ class TokenIssuer
             ->where('expires_at', '>', now())
             ->find($tokenId);
 
-        if (!$token) {
+        if (! $token) {
             throw new InvalidTokenException();
         }
 

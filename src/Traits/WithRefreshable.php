@@ -15,7 +15,7 @@ trait WithRefreshable
      */
     public function refreshToken(): HasOne
     {
-        if (!in_array(Model::class, class_parents($this))) {
+        if (! in_array(Model::class, class_parents($this))) {
             throw new InvalidModelException((new ReflectionClass($this))->name);
         }
 

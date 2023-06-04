@@ -7,6 +7,7 @@ use Carbon\Carbon;
 readonly class TokenConfig
 {
     public Carbon $tokenExpireAt;
+
     public Carbon $refreshTokenExpireAt;
 
     public function __construct(public array $abilities = ['*'], ?Carbon $tokenExpireAt = null, ?Carbon $refreshTokenExpireAt = null)
@@ -15,11 +16,13 @@ readonly class TokenConfig
         $this->refreshTokenExpireAt = $this->getDefaultRefreshToken($refreshTokenExpireAt);
     }
 
-    private  function getToken(?Carbon $token, string $configString): ?Carbon
+    private function getToken(?Carbon $token, string $configString): ?Carbon
     {
-        if (!$token) {
+        if (! $token) {
             $config = config($configString);
-            if (!$config) return null;
+            if (! $config) {
+                return null;
+            }
 
             return now()->addMinutes($config);
         }
@@ -30,18 +33,18 @@ readonly class TokenConfig
     /**
      * @throws \Exception
      */
-    private  function getDefaultToken(?Carbon $token): Carbon
+    private function getDefaultToken(?Carbon $token): Carbon
     {
         $result = self::getToken($token, 'sanctum-refresh.expiration.access_token');
 
-        if (!$result) {
+        if (! $result) {
             throw new \Exception('sanctum-refresh.expiration.access_token is not set');
         }
 
         return $result;
     }
 
-    private  function getDefaultRefreshToken(?Carbon $token): Carbon
+    private function getDefaultRefreshToken(?Carbon $token): Carbon
     {
         return self::getToken($token, 'sanctum-refresh.expiration.refresh_token');
     }

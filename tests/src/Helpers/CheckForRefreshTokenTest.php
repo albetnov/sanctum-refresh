@@ -30,7 +30,7 @@ it('verifies that the token is invalid even id is correct', function () {
     $token = TokenIssuer::issue(User::first());
 
     $refreshTokenId = $token->refreshToken->id;
-    $refreshToken = $refreshTokenId . '|' . Str::random(40);
+    $refreshToken = $refreshTokenId.'|'.Str::random(40);
 
     expect(CheckForRefreshToken::check($refreshToken))->toThrow(InvalidTokenException::class);
 })->throws(InvalidTokenException::class);

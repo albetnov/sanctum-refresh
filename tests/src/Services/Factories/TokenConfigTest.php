@@ -2,10 +2,9 @@
 
 use Albet\SanctumRefresh\Services\Factories\TokenConfig;
 use Illuminate\Support\Facades\Config;
-
 use function Spatie\PestPluginTestTime\testTime;
 
-it("token config factory built successfully", function () {
+it('token config factory built successfully', function () {
     $tokenExpireAt = now()->addMinutes(5);
     $refreshTokenExpireAt = now()->addMinutes(10);
 
@@ -20,7 +19,7 @@ it("token config factory built successfully", function () {
         ->and($tokenConfig->refreshTokenExpireAt)->toBe($refreshTokenExpireAt);
 });
 
-it("token config factory built successfully (default values)", function () {
+it('token config factory built successfully (default values)', function () {
     Config::set('sanctum-refresh.expiration.access_token', 5);
     Config::set('sanctum-refresh.expiration.refresh_token', 10);
     testTime()->freeze();
@@ -32,9 +31,9 @@ it("token config factory built successfully (default values)", function () {
     expect($tokenConfig->refreshTokenExpireAt)->toBeCarbon(now()->addMinutes(10)->toDateTimeString());
 });
 
-it("complained when config of access token expiration is null", function () {
-   Config::set('sanctum-refresh.expiration.access_token', null);
+it('complained when config of access token expiration is null', function () {
+    Config::set('sanctum-refresh.expiration.access_token', null);
 
-   $tokenConfig = new TokenConfig();
-   expect($tokenConfig)->toThrow(\Exception::class);
+    $tokenConfig = new TokenConfig();
+    expect($tokenConfig)->toThrow(\Exception::class);
 })->throws(\Exception::class);
