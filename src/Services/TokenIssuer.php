@@ -24,6 +24,7 @@ class TokenIssuer
             throw new MustHaveTraitException(get_class($tokenable), HasApiTokens::class);
         }
 
+        /* @phpstan-ignore-next-line */
         $token = $tokenable->createToken(
             $tokenName,
             $tokenConfig->abilities,
