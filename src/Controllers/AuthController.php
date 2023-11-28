@@ -20,7 +20,7 @@ class AuthController extends Controller
     {
         $user = $request->auth();
 
-        if (! $user) {
+        if (!$user) {
             return response()->json([
                 'message' => 'Invalid Credentials!',
             ], 401);
@@ -43,9 +43,9 @@ class AuthController extends Controller
             $request->cookie('refresh_token') :
             $request->get('refresh_token');
 
-        try {
-            $newToken = TokenIssuer::refreshToken($refreshToken);
-        } catch (InvalidTokenException $e) {
+        $newToken = TokenIssuer::refreshToken($refreshToken);
+
+        if (!$newToken) {
             return response()->json([
                 'message' => SanctumRefresh::$middlewareMsg,
             ], 400);

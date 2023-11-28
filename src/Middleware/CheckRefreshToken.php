@@ -2,7 +2,6 @@
 
 namespace Albet\SanctumRefresh\Middleware;
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Helpers\CheckForRefreshToken;
 use Albet\SanctumRefresh\SanctumRefresh;
 use Closure;
@@ -23,21 +22,18 @@ class CheckRefreshToken
             $request->cookie('refresh_token') :
             $request->get('refresh_token');
 
-        if (! $refreshToken) {
+        if (!$refreshToken) {
             return response()->json([
                 'message' => SanctumRefresh::$middlewareMsg,
             ], 400);
         }
 
-        try {
-            CheckForRefreshToken::check($refreshToken);
-
-            return $next($request);
-        } catch (InvalidTokenException $e) {
+        if (!CheckForRefreshToken::check($refreshToken)) {
             return response()->json([
                 'message' => SanctumRefresh::$middlewareMsg,
-                'reason' => $e->getMessage(),
             ], 400);
         }
+
+        return $next($request);
     }
 }

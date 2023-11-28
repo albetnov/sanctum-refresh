@@ -23,10 +23,12 @@ trait HasRefreshableToken
         $accTokens = $this->load('tokens')->tokens->all();
 
         if ($accTokens) {
+            /** @var RefreshTokenRepository $refreshTokenRepository */
+            $refreshTokenRepository = app(RefreshTokenRepository::class);
             foreach ($accTokens as $accToken) {
                 // @phpstan-ignore-next-line
                 if ($accToken->id) {
-                    (new RefreshTokenRepository())->revokeRefreshTokenFromTokenId($accToken->id);
+                    $refreshTokenRepository->revokeRefreshTokenFromTokenId($accToken->id);
                     $accToken->delete();
 
                     return true;

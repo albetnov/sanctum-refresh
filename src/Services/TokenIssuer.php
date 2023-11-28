@@ -2,7 +2,6 @@
 
 namespace Albet\SanctumRefresh\Services;
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Services\Factories\Token;
@@ -20,7 +19,7 @@ class TokenIssuer
     {
         $tokenableTraits = array_values(class_uses($tokenable));
 
-        if (! in_array(HasApiTokens::class, $tokenableTraits)) {
+        if (!in_array(HasApiTokens::class, $tokenableTraits)) {
             throw new MustHaveTraitException(get_class($tokenable), HasApiTokens::class);
         }
 
@@ -42,13 +41,10 @@ class TokenIssuer
         return new Token($token, $plainRefreshToken, $refreshToken);
     }
 
-    /**
-     * @throws InvalidTokenException
-     */
-    public static function refreshToken(string $refreshToken, string $tokenName = 'web', TokenConfig $tokenConfig = new TokenConfig()): Token
+    public static function refreshToken(string $refreshToken, string $tokenName = 'web', TokenConfig $tokenConfig = new TokenConfig()): Token|false
     {
-        if (! str_contains($refreshToken, '|')) {
-            throw new InvalidTokenException();
+        if (!str_contains($refreshToken, '|')) {
+            return false;
         }
 
         // Parse the token id
@@ -59,8 +55,8 @@ class TokenIssuer
             ->where('expires_at', '>', now())
             ->find($tokenId);
 
-        if (! $token) {
-            throw new InvalidTokenException();
+        if (!$token) {
+            return false;
         }
 
         // Regenerate token.
