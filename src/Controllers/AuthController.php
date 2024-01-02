@@ -2,7 +2,6 @@
 
 namespace Albet\SanctumRefresh\Controllers;
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
 use Albet\SanctumRefresh\Requests\LoginRequest;
 use Albet\SanctumRefresh\SanctumRefresh;

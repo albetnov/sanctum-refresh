@@ -43,46 +43,13 @@ return [
         // set the fallback of refresh token expiration
         'refresh_token' => 30, // 30 minutes
     ],
+
     /**
-     * Configuration of Sanctum Refresh behaviour
+     * Set the message to be used by the api response
      */
-    'sanctum_refresh' => [
-        /**
-         * Custom the api response message
-         * array<string, string>
-         */
-        'message' => [
-            // Authenticated successful message to be used by /login route
-            'authed' => 'Authentication success!',
-            // Invalid or expired refresh token message
-            'invalidMsg' => 'Refresh token is expired or invalid.',
-        ],
-        /**
-         * Custom the routes behaviour
-         * array<string, string>
-         */
-        'routes' => [
-            // Only show refresh route (hide the login route)
-            'refreshOnly' => false,
-
-            /**
-             * Custom the routes urls
-             * array<string, string>
-             */
-            'urls' => [
-                'login' => '/login',
-                'refresh' => '/refresh',
-            ],
-
-            /**
-             * Custom the routes middlewares
-             * array<string, ?array>
-             */
-            'middlewares' => [
-                'login' => null,
-                'refresh' => ['checkRefreshToken'],
-            ],
-        ],
+    'message' => [
+        'authed' => 'Authentication success!',
+        'invalid' => 'Refresh token is expired or invalid.',
     ],
 ];
 ```
@@ -145,35 +112,29 @@ and this package.
     ```
     
     Simply pass the `$refreshToken` as a string and you're set. The Helpers will take care validating
-    the entire thing for you and return `true` if success, throw:
+    the entire thing for you and return `bool`.
     
-    ```php
-    Albet\SanctumRefresh\Exceptions\InvalidTokenException::class
-    ```
-    
-    if fails. An example usage (CheckRefreshToken middleware):
+    An example usage (CheckRefreshToken middleware):
     ```php
     // Check refresh token.
     $refreshToken = $request->hasCookie('refresh_token') ?
         $request->cookie('refresh_token') :
         $request->get('refresh_token');
-    
-    if (! $refreshToken) {
+
+    if (!$refreshToken) {
         return response()->json([
             'message' => SanctumRefresh::$middlewareMsg,
         ], 400);
     }
-    
-    try {
-        CheckForRefreshToken::check($refreshToken);
-    
-        return $next($request);
-    } catch (InvalidTokenException $e) {
+
+    if (!CheckForRefreshToken::check($refreshToken)) {
         return response()->json([
             'message' => SanctumRefresh::$middlewareMsg,
-            'reason' => $e->getMessage(),
         ], 400);
     }
+
+    return $next($request);
+   
     ```
     Above is `CheckRefreshToken` middleware code.
 
@@ -226,25 +187,8 @@ and this package.
     based on given Refresh Token. This method takes 3 arguments. The plain refresh token string, the new token name, 
     and config (expiration, etc).
     
-    Both methods above return `Collection` instance with entry like below:
-    ```php
-    [
-        accessTokenInstance, 
-        refreshTokenInstance,
-        plain => [accessToken, refreshToken]
-    ]
-    ```
+    Both methods above return `Token` instance.
     
-    
-> Sanctum Refresh also provide `config_builder()` to generate a config arrays with more easy to read. Example usage:
-> ```php
-> TokenIssuer::refreshToken($string, $name, config_builder(
->   abilities: ['*'], 
->   tokenExpiresAt: now()->addSeconds(30), 
->   refreshTokenExpiresAt: now()->addHour()
-> ))
-> ```
-
 - HasRefreshableToken Trait (User Model)
     
     Instead of having pain putting `$model` over and over in `TokenIssuer`. You can just use `HasRefreshableToken` trait in

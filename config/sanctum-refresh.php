@@ -12,45 +12,12 @@ return [
         // set the fallback of refresh token expiration
         'refresh_token' => 30, // 30 minutes
     ],
+
     /**
-     * Configuration of Sanctum Refresh behaviour
+     * Set the message to be used by the api response
      */
-    'sanctum_refresh' => [
-        /**
-         * Custom the api response message
-         * array<string, string>
-         */
-        'message' => [
-            // Authenticated successful message to be used by /login route
-            'authed' => 'Authentication success!',
-            // Invalid or expired refresh token message
-            'invalidMsg' => 'Refresh token is expired or invalid.',
-        ],
-        /**
-         * Custom the routes behaviour
-         * array<string, string>
-         */
-        'routes' => [
-            // Only show refresh route (hide the login route)
-            'refreshOnly' => false,
-
-            /**
-             * Custom the routes urls
-             * array<string, string>
-             */
-            'urls' => [
-                'login' => '/login',
-                'refresh' => '/refresh',
-            ],
-
-            /**
-             * Custom the routes middlewares
-             * array<string, ?array>
-             */
-            'middlewares' => [
-                'login' => null,
-                'refresh' => ['checkRefreshToken'],
-            ],
-        ],
+    'message' => [
+        'authed' => 'Authentication success!',
+        'invalid' => 'Refresh token is expired or invalid.',
     ],
 ];

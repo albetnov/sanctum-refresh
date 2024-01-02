@@ -1,6 +1,5 @@
 <?php
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
@@ -25,12 +24,12 @@ it('successfully create a token', function () {
 });
 
 it('throw invalid token when no indicator given', function () {
-    expect(TokenIssuer::refreshToken('fake refresh'))->toThrow(InvalidTokenException::class);
-})->throws(InvalidTokenException::class);
+    expect(TokenIssuer::refreshToken('fake refresh'))->toBeFalse();
+});
 
 it('throw invalid token when given id is invalid', function () {
-    expect(TokenIssuer::refreshToken('1|token'))->toThrow(InvalidTokenException::class);
-})->throws(InvalidTokenException::class);
+    expect(TokenIssuer::refreshToken('1|token'))->toBeFalse();
+});
 
 it('generate the refresh token successfully', function () {
     $refreshToken = TokenIssuer::issue(User::find(1))->plainRefreshToken;
@@ -46,7 +45,7 @@ it('throw invalid token when token already expired', function () {
         'expires_at' => now()->subMinutes(30),
     ])->id;
 
-    $fakeTokenable = $id.'|'.$fakeToken;
+    $fakeTokenable = $id . '|' . $fakeToken;
 
-    expect(TokenIssuer::refreshToken($fakeTokenable))->toThrow(InvalidTokenException::class);
-})->throws(InvalidTokenException::class);
+    expect(TokenIssuer::refreshToken($fakeTokenable))->toBeFalse();
+});

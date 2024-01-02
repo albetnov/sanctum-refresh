@@ -32,8 +32,8 @@ class SanctumRefresh
             if (
                 $checkModel->getParentClass() !== false &&
                 ($checkModel->getParentClass()->name === Model::class ||
-                $checkModel->getParentClass()->name === PersonalAccessToken::class ||
-                $checkModel->getParentClass()->name === \Albet\SanctumRefresh\Models\PersonalAccessToken::class)
+                    $checkModel->getParentClass()->name === PersonalAccessToken::class ||
+                    $checkModel->getParentClass()->name === \Albet\SanctumRefresh\Models\PersonalAccessToken::class)
             ) {
                 Sanctum::usePersonalAccessTokenModel($model);
                 self::$model = $model;
@@ -47,22 +47,38 @@ class SanctumRefresh
 
     public static function boot(): void
     {
-        self::$authedMessage = config('sanctum-refresh.sanctum_refresh.message.authed');
-        self::$middlewareMsg = config('sanctum-refresh.sanctum_refresh.message.invalidMsg');
+        self::$authedMessage = config('sanctum-refresh.message.authed');
+        self::$middlewareMsg = config('sanctum-refresh.message.invalid');
     }
 
-    public static function routes(): void
-    {
-        Route::controller(AuthController::class)->group(function () {
-            if (! config('sanctum-refresh.sanctum_refresh.routes.refreshOnly')) {
-                Route::post(config('sanctum-refresh.sanctum_refresh.routes.urls.login'), 'login')
+    public static function routes(
+        bool $refreshOnly = false,
+        string $loginUrl = "/login",
+        string|array|null $loginMiddlewares = null,
+        string $refreshUrl = "/refresh",
+        string|array|null $refreshMiddlewares = null
+    ): void {
+        Route::controller(AuthController::class)->group(function () use (
+            $refreshOnly,
+            $loginUrl,
+            $loginMiddlewares,
+            $refreshUrl,
+            $refreshMiddlewares
+        ) {
+            if (!$refreshOnly) {
+                Route::post($loginUrl, 'login')
                     ->name('login')
-                    ->middleware(config('sanctum-refresh.sanctum_refresh.routes.middlewares.login'));
+                    ->middleware($loginMiddlewares);
             }
 
-            Route::post(config('sanctum-refresh.sanctum_refresh.routes.urls.refresh'), 'refresh')
+            Route::post($refreshUrl, 'refresh')
                 ->name('refresh')
-                ->middleware(config('sanctum-refresh.sanctum_refresh.routes.middlewares.refresh'));
+                ->middleware(
+                    array_merge(
+                        ['checkRefreshToken'],
+                        is_string($refreshMiddlewares) ? [$refreshMiddlewares] : $refreshMiddlewares ?? []
+                    )
+                );
         });
     }
 }

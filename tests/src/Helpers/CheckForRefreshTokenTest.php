@@ -1,6 +1,5 @@
 <?php
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Helpers\CheckForRefreshToken;
 use Albet\SanctumRefresh\Models\User;
 use Albet\SanctumRefresh\Services\TokenIssuer;
@@ -17,20 +16,20 @@ it('verifies that the refresh token given is valid', function () {
 it('verifies that the refresh token given is invalid', function () {
     $refreshToken = 'random | string';
 
-    expect(CheckForRefreshToken::check($refreshToken))->toThrow(InvalidTokenException::class);
-})->throws(InvalidTokenException::class);
+    expect(CheckForRefreshToken::check($refreshToken))->toBeFalse();
+});
 
 it('verifies that the refresh token given is invalid (no indicator)', function () {
     $refreshToken = 'random string';
 
-    expect(CheckForRefreshToken::check($refreshToken))->toThrow(InvalidTokenException::class);
-})->throws(InvalidTokenException::class);
+    expect(CheckForRefreshToken::check($refreshToken))->toBeFalse();
+});
 
 it('verifies that the token is invalid even id is correct', function () {
     $token = TokenIssuer::issue(User::first());
 
     $refreshTokenId = $token->refreshToken->id;
-    $refreshToken = $refreshTokenId.'|'.Str::random(40);
+    $refreshToken = $refreshTokenId . '|' . Str::random(40);
 
-    expect(CheckForRefreshToken::check($refreshToken))->toThrow(InvalidTokenException::class);
-})->throws(InvalidTokenException::class);
+    expect(CheckForRefreshToken::check($refreshToken))->toBeFalse();
+});
