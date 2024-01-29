@@ -12,12 +12,4 @@ return [
         // set the fallback of refresh token expiration
         'refresh_token' => 30, // 30 minutes
     ],
-
-    /**
-     * Set the message to be used by the api response
-     */
-    'message' => [
-        'authed' => 'Authentication success!',
-        'invalid' => 'Refresh token is expired or invalid.',
-    ],
 ];

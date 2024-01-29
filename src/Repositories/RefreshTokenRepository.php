@@ -2,8 +2,9 @@
 
 namespace Albet\SanctumRefresh\Repositories;
 
-use Albet\SanctumRefresh\Helpers\CheckForRefreshToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
+
+use function Albet\SanctumRefresh\checkRefreshToken;
 
 class RefreshTokenRepository
 {
@@ -21,7 +22,7 @@ class RefreshTokenRepository
 
     public function revokeRefreshTokenFromToken(string $plainRefreshToken): bool
     {
-        if (!CheckForRefreshToken::check($plainRefreshToken)) {
+        if (!checkRefreshToken($plainRefreshToken)) {
             return false;
         }
 
