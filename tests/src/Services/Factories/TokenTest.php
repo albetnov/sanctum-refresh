@@ -2,20 +2,17 @@
 
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
-use Albet\SanctumRefresh\Services\Contracts\Token;
+use Albet\SanctumRefresh\Services\Factories\Token;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\NewAccessToken;
 
-it('Return AUTH_INVALID string', function () {
-    $string = 'AUTH_INVALID';
-
-    expect(Token::AUTH_INVALID)->toBe($string);
-});
-
-it('contain correct collection lists', function () {
-    $token = User::find(1)->createToken('web',
+it('token factory built successfully', function () {
+    $token = User::find(1)->createToken(
+        'web',
         $config['abilities'] ?? ['*'],
         $config['token_expires_at'] ??
-        now()->addMinutes(config('sanctum-refresh.expiration.access_token')));
+            now()->addMinutes(config('sanctum-refresh.expiration.access_token'))
+    );
 
     $plainRefreshToken = Str::random(40);
 
@@ -28,5 +25,7 @@ it('contain correct collection lists', function () {
 
     $tokenInstance = new Token($token, $plainRefreshToken, $refreshToken);
 
-    expect($tokenInstance->getToken())->toHaveKeys(['refreshToken', 'accessToken', 'plain']);
+    expect($tokenInstance->token)->toBeInstanceOf(NewAccessToken::class)
+        ->and($tokenInstance->plainRefreshToken)->toBeString()
+        ->and($tokenInstance->refreshToken)->toBeInstanceOf(RefreshToken::class);
 });

@@ -2,53 +2,49 @@
 
 namespace Albet\SanctumRefresh\Services;
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
-use Albet\SanctumRefresh\Exceptions\MustExtendHasApiTokens;
+use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
 use Albet\SanctumRefresh\Models\RefreshToken;
-use Albet\SanctumRefresh\Services\Contracts\Token;
+use Albet\SanctumRefresh\Services\Factories\Token;
+use Albet\SanctumRefresh\Services\Factories\TokenConfig;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class TokenIssuer
 {
     /**
-     * @throws MustExtendHasApiTokens
+     * @throws MustHaveTraitException
      */
-    public static function issue(Model|bool $user, string $tokenName = 'web', array $config = []): Collection|string
+    public static function issue(Model $tokenable, string $tokenName = 'web', TokenConfig $tokenConfig = new TokenConfig()): Token
     {
-        if (! $user) {
-            return Token::AUTH_INVALID;
+        $tokenableTraits = array_values(class_uses($tokenable));
+
+        if (!in_array(HasApiTokens::class, $tokenableTraits)) {
+            throw new MustHaveTraitException(get_class($tokenable), HasApiTokens::class);
         }
 
-        if (! method_exists($user, 'createToken')) {
-            throw new MustExtendHasApiTokens(get_class($user));
-        }
-
-        $token = $user->createToken($tokenName,
-            $config['abilities'] ?? ['*'],
-            $config['token_expires_at'] ??
-            now()->addMinutes(config('sanctum-refresh.expiration.access_token')));
+        /* @phpstan-ignore-next-line */
+        $token = $tokenable->createToken(
+            $tokenName,
+            $tokenConfig->abilities,
+            $tokenConfig->tokenExpireAt
+        );
 
         $plainRefreshToken = Str::random(40);
 
         $refreshToken = RefreshToken::create([
             'token' => hash('sha256', $plainRefreshToken),
-            'expires_at' => $config['refresh_expires_at'] ??
-                now()->addMinutes(config('sanctum-refresh.expiration.refresh_token')),
+            'expires_at' => $tokenConfig->refreshTokenExpireAt,
             'token_id' => $token->accessToken->id,
         ]);
 
-        return (new Token($token, $plainRefreshToken, $refreshToken))->getToken();
+        return new Token($token, $plainRefreshToken, $refreshToken);
     }
 
-    /**
-     * @throws InvalidTokenException
-     */
-    public static function refreshToken(string $refreshToken, string $tokenName = 'web', array $config = []): Collection|string
+    public static function refreshToken(string $refreshToken, string $tokenName = 'web', TokenConfig $tokenConfig = new TokenConfig()): Token|false
     {
-        if (! str_contains($refreshToken, '|')) {
-            throw new InvalidTokenException();
+        if (!str_contains($refreshToken, '|')) {
+            return false;
         }
 
         // Parse the token id
@@ -59,30 +55,30 @@ class TokenIssuer
             ->where('expires_at', '>', now())
             ->find($tokenId);
 
-        if (! $token) {
-            throw new InvalidTokenException();
+        if (!$token) {
+            return false;
         }
 
         // Regenerate token.
         $newToken = $token->accessToken->tokenable
-            ->createToken($tokenName,
-                $config['abilities'] ?? ['*'],
-                $config['token_expires_at'] ??
-                now()->addMinutes(config('sanctum-refresh.expiration.access_token')));
+            ->createToken(
+                $tokenName,
+                $tokenConfig->abilities,
+                $tokenConfig->tokenExpireAt
+            );
 
         $plainRefreshToken = Str::random(40);
 
         $refreshToken = RefreshToken::create([
             'token_id' => $newToken->accessToken->id,
             'token' => hash('sha256', $plainRefreshToken),
-            'expires_at' => $config['refresh_expires_at'] ??
-                now()->addMinutes(config('sanctum-refresh.expiration.refresh_token')),
+            'expires_at' => $tokenConfig->refreshTokenExpireAt,
         ]);
 
         // Delete current token (revoke refresh token)
         $token->accessToken->delete();
         $token->delete();
 
-        return (new Token($newToken, $plainRefreshToken, $refreshToken))->getToken();
+        return new Token($newToken, $plainRefreshToken, $refreshToken);
     }
 }

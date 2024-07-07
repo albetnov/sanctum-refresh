@@ -2,9 +2,9 @@
 
 namespace Albet\SanctumRefresh\Repositories;
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
-use Albet\SanctumRefresh\Helpers\CheckForRefreshToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
+
+use function Albet\SanctumRefresh\checkRefreshToken;
 
 class RefreshTokenRepository
 {
@@ -20,16 +20,15 @@ class RefreshTokenRepository
         return false;
     }
 
-    /**
-     * @throws InvalidTokenException
-     */
-    public function revokeRefreshTokenFromToken(string $plainRefreshToken): void
+    public function revokeRefreshTokenFromToken(string $plainRefreshToken): bool
     {
-        CheckForRefreshToken::check($plainRefreshToken);
+        if (!checkRefreshToken($plainRefreshToken)) {
+            return false;
+        }
 
         $findTokenId = explode('|', $plainRefreshToken);
         $findTokenId = $findTokenId[array_key_first($findTokenId)];
 
-        RefreshToken::find($findTokenId)->delete();
+        return RefreshToken::find($findTokenId)->delete();
     }
 }

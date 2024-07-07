@@ -1,6 +1,5 @@
 <?php
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
@@ -24,7 +23,7 @@ it('cannot revoke token due to invalid token id', function () {
 });
 
 it('can revoke token from plain token', function () {
-    $plain = User::first()->createTokenWithRefresh('web')->toArray()['plain']['refreshToken'];
+    $plain = User::first()->createTokenWithRefresh('web')->plainRefreshToken;
 
     $repo = new RefreshTokenRepository();
     $repo->revokeRefreshTokenFromToken($plain);
@@ -35,6 +34,5 @@ it('can revoke token from plain token', function () {
 it('cannot revoke token from plain token (invalid)', function () {
     $repo = new RefreshTokenRepository();
 
-    expect($repo->revokeRefreshTokenFromToken('fake token'))
-        ->toThrow(InvalidTokenException::class);
-})->throws(InvalidTokenException::class);
+    expect($repo->revokeRefreshTokenFromToken('fake token'))->toBeFalse();
+});
