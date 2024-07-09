@@ -3,9 +3,9 @@
 namespace Albet\SanctumRefresh\Traits;
 
 use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
+use Albet\SanctumRefresh\Factories\Token;
+use Albet\SanctumRefresh\Factories\TokenConfig;
 use Albet\SanctumRefresh\Repositories\RefreshTokenRepository;
-use Albet\SanctumRefresh\Services\Factories\Token;
-use Albet\SanctumRefresh\Services\Factories\TokenConfig;
 use Albet\SanctumRefresh\Services\TokenIssuer;
 
 trait HasRefreshableToken

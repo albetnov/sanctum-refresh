@@ -3,9 +3,10 @@
 namespace Albet\SanctumRefresh\Services;
 
 use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
+use Albet\SanctumRefresh\Factories\Token;
+use Albet\SanctumRefresh\Factories\TokenConfig;
+use Albet\SanctumRefresh\Helpers;
 use Albet\SanctumRefresh\Models\RefreshToken;
-use Albet\SanctumRefresh\Services\Factories\Token;
-use Albet\SanctumRefresh\Services\Factories\TokenConfig;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
@@ -15,11 +16,14 @@ class TokenIssuer
     /**
      * @throws MustHaveTraitException
      */
-    public static function issue(Model $tokenable, string $tokenName = 'web', TokenConfig $tokenConfig = new TokenConfig()): Token
-    {
+    public static function issue(
+        Model $tokenable,
+        string $tokenName = 'web',
+        TokenConfig $tokenConfig = new TokenConfig()
+    ): Token {
         $tokenableTraits = array_values(class_uses($tokenable));
 
-        if (!in_array(HasApiTokens::class, $tokenableTraits)) {
+        if (! in_array(HasApiTokens::class, $tokenableTraits)) {
             throw new MustHaveTraitException(get_class($tokenable), HasApiTokens::class);
         }
 
@@ -41,21 +45,23 @@ class TokenIssuer
         return new Token($token, $plainRefreshToken, $refreshToken);
     }
 
-    public static function refreshToken(string $refreshToken, string $tokenName = 'web', TokenConfig $tokenConfig = new TokenConfig()): Token|false
-    {
-        if (!str_contains($refreshToken, '|')) {
+    public static function refreshToken(
+        string $refreshToken,
+        string $tokenName = 'web',
+        TokenConfig $tokenConfig = new TokenConfig()
+    ): Token|false {
+        $tokenParts = Helpers::parseRefreshToken($refreshToken);
+
+        if (! $tokenParts) {
             return false;
         }
-
-        // Parse the token id
-        $tokenId = explode('|', $refreshToken)[0];
 
         // Find token from given id
         $token = RefreshToken::with('accessToken')
             ->where('expires_at', '>', now())
-            ->find($tokenId);
+            ->find($tokenParts[0]);
 
-        if (!$token) {
+        if (! $token) {
             return false;
         }
 

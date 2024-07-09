@@ -39,7 +39,5 @@ class SanctumRefresh
         throw new InvalidModelException($model);
     }
 
-    public static function boot(): void
-    {
-    }
+    public static function boot(): void {}
 }
