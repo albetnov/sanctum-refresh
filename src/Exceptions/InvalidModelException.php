@@ -2,7 +2,7 @@
 
 namespace Albet\SanctumRefresh\Exceptions;
 
-class InvalidModelException extends \Exception
+class InvalidModelException extends SanctumRefreshException
 {
     public function __construct($model)
     {

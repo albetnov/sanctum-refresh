@@ -2,7 +2,7 @@
 
 namespace Albet\SanctumRefresh\Exceptions;
 
-class MustHaveTraitException extends \Exception
+class MustHaveTraitException extends SanctumRefreshException
 {
     public function __construct(string $model, string $trait, int $code = 0, $previous = null)
     {
