@@ -5,10 +5,10 @@ namespace Albet\SanctumRefresh\Tests;
 use Albet\SanctumRefresh\Facades\SanctumRefresh;
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\SanctumRefreshServiceProvider;
-use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use function Orchestra\Testbench\artisan;
 use Orchestra\Testbench\TestCase as Orchestra;
+
+use function Orchestra\Testbench\artisan;
 
 class TestCase extends Orchestra
 {
@@ -58,10 +58,5 @@ class TestCase extends Orchestra
 
         $migration = include __DIR__.'/../database/migrations/create_refresh_tokens_table.php.stub';
         $migration->up();
-    }
-
-    protected function resolveApplicationHttpKernel($app)
-    {
-        $app->singleton(Kernel::class, \Albet\SanctumRefresh\Tests\Kernel::class);
     }
 }

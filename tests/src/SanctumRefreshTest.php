@@ -4,10 +4,10 @@ use Albet\SanctumRefresh\Exceptions\InvalidModelException;
 use Albet\SanctumRefresh\SanctumRefresh;
 use Illuminate\Database\Eloquent\Model;
 
+uses()->group('root');
+
 it('can change personal access token model', function () {
-    class PersonalAccessToken extends Model
-    {
-    }
+    class PersonalAccessToken extends Model {}
 
     SanctumRefresh::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
@@ -15,9 +15,7 @@ it('can change personal access token model', function () {
 });
 
 it('cannot change personal access token model (invalid class)', function () {
-    class FakePersonalAccessToken
-    {
-    }
+    class FakePersonalAccessToken {}
 
     SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class);
 

@@ -1,8 +1,9 @@
 <?php
 
+use Albet\SanctumRefresh\Factories\Token;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
-use Albet\SanctumRefresh\Services\Factories\Token;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\NewAccessToken;
 
@@ -11,7 +12,7 @@ it('token factory built successfully', function () {
         'web',
         $config['abilities'] ?? ['*'],
         $config['token_expires_at'] ??
-            now()->addMinutes(config('sanctum-refresh.expiration.access_token'))
+            now()->addMinutes(Config::get('sanctum-refresh.expiration.access_token'))
     );
 
     $plainRefreshToken = Str::random(40);
@@ -19,13 +20,13 @@ it('token factory built successfully', function () {
     $refreshToken = RefreshToken::create([
         'token' => hash('sha256', $plainRefreshToken),
         'expires_at' => $config['refresh_expires_at'] ??
-            now()->addMinutes(config('sanctum-refresh.expiration.refresh_token')),
+            now()->addMinutes(Config::get('sanctum-refresh.expiration.refresh_token')),
         'token_id' => $token->accessToken->id,
     ]);
 
     $tokenInstance = new Token($token, $plainRefreshToken, $refreshToken);
 
     expect($tokenInstance->token)->toBeInstanceOf(NewAccessToken::class)
-        ->and($tokenInstance->plainRefreshToken)->toBeString()
+        ->and($tokenInstance->plainTextRefreshToken)->toBeString()
         ->and($tokenInstance->refreshToken)->toBeInstanceOf(RefreshToken::class);
 });

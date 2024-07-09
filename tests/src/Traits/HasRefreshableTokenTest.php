@@ -1,8 +1,8 @@
 <?php
 
+use Albet\SanctumRefresh\Factories\Token;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
-use Albet\SanctumRefresh\Services\Factories\Token;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

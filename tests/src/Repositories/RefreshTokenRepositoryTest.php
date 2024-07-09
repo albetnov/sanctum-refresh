@@ -23,7 +23,7 @@ it('cannot revoke token due to invalid token id', function () {
 });
 
 it('can revoke token from plain token', function () {
-    $plain = User::first()->createTokenWithRefresh('web')->plainRefreshToken;
+    $plain = User::first()->createTokenWithRefresh('web')->plainTextRefreshToken;
 
     $repo = new RefreshTokenRepository();
     $repo->revokeRefreshTokenFromToken($plain);
