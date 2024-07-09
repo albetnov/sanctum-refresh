@@ -18,7 +18,7 @@ class PruneToken extends Command
         $tokens = RefreshToken::with('accessToken')
             ->whereHas('accessToken', fn ($q) => $q->where('expires_at', '<', now()))
             ->where('expires_at', '<', now())
-            ->get();
+            ->lazy();
 
         // iterates through the token
         foreach ($tokens as $token) {
