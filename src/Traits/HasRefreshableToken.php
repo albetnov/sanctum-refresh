@@ -2,6 +2,7 @@
 
 namespace Albet\SanctumRefresh\Traits;
 
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
 use Albet\SanctumRefresh\Factories\Token;
 use Albet\SanctumRefresh\Factories\TokenConfig;
 use Albet\SanctumRefresh\Repositories\RefreshTokenRepository;
@@ -10,7 +11,7 @@ use Albet\SanctumRefresh\Services\TokenIssuer;
 trait HasRefreshableToken
 {
     /**
-     * @throws MustHaveTraitException
+     * @throws SanctumRefreshException[ERR_INVALID_MODEL]
      */
     public function createTokenWithRefresh(string $name, TokenConfig $tokenConfig = new TokenConfig()): Token
     {
@@ -27,7 +28,7 @@ trait HasRefreshableToken
             foreach ($accTokens as $accToken) {
                 // @phpstan-ignore-next-line
                 if ($accToken->id) {
-                    $refreshTokenRepository->revokeRefreshTokenFromTokenId($accToken->id);
+                    $refreshTokenRepository->revokeFromTokenId($accToken->id);
                     $accToken->delete();
 
                     return true;

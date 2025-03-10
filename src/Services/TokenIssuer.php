@@ -14,7 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
 class TokenIssuer
 {
     /**
-     * @throws MustHaveTraitException
+     * @throws SanctumRefreshException [ERR_INVALID_MODEL]
      */
     public static function issue(
         Model $tokenable,
@@ -62,8 +62,7 @@ class TokenIssuer
 
         // Find token from given id
         $token = RefreshToken::with('accessToken')
-            ->where('expires_at', '>', now())
-            ->where('token', $tokenParts[1])
+            ->check($tokenParts[1])
             ->find($tokenParts[0]);
 
         if (! $token) {

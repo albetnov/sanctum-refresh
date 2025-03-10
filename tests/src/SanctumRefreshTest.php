@@ -19,6 +19,5 @@ it('cannot change personal access token model (invalid class)', function () {
 
     SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class);
 
-    expect(fn() => SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class))
-        ->toThrow(SanctumRefreshException::class, '[Runtime Check] Invalid Model: FakePersonalAccessToken. No PersonalAccessToken found');
-});
+    SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class);
+})->throws(SanctumRefreshException::class, '[Runtime Check] Invalid Model: FakePersonalAccessToken. Not a valid access token model');

@@ -29,14 +29,7 @@ class SanctumRefreshServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(
             RefreshTokenRepository::class,
-            fn ($app) => new RefreshTokenRepository()
+            fn($app) => new RefreshTokenRepository()
         );
-    }
-
-    public function boot()
-    {
-        parent::boot();
-
-        SanctumRefresh::boot();
     }
 }

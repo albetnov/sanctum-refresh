@@ -5,6 +5,8 @@ namespace Albet\SanctumRefresh\Commands;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Illuminate\Console\Command;
 
+use function Laravel\Prompts\info;
+
 class PruneToken extends Command
 {
     public $signature = 'prune:token';
@@ -29,7 +31,7 @@ class PruneToken extends Command
             }
         }
 
-        $this->info('Token cleared.');
+        info('Token cleared.');
 
         return self::SUCCESS;
     }

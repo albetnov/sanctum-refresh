@@ -10,26 +10,26 @@ it('can revoke token from given valid token id', function () {
 
     $repo = new RefreshTokenRepository();
 
-    expect($repo->revokeRefreshTokenFromTokenId(PersonalAccessToken::first()->id))->toBeTrue();
+    expect($repo->revokeFromTokenId(PersonalAccessToken::first()->id))->toBeTrue();
 });
 
 it('cannot revoke token due to invalid token id', function () {
     $repo = new RefreshTokenRepository();
 
-    expect($repo->revokeRefreshTokenFromTokenId(5))->toBeFalse();
+    expect($repo->revokeFromTokenId(5))->toBeFalse();
 });
 
 it('can revoke token from plain token', function () {
-    $plain = User::first()->createTokenWithRefresh('web')->plainTextRefreshToken;
+    $token = User::first()->createTokenWithRefresh('web');
 
     $repo = new RefreshTokenRepository();
-    $repo->revokeRefreshTokenFromToken($plain);
+    expect($repo->revokeFromTokenText($token->plainTextRefreshToken))->toBeTrue();
 
-    expect(RefreshToken::first())->toBeNull();
+    expect(RefreshToken::find($token->refreshToken->id))->toBeNull();
 });
 
 it('cannot revoke token from plain token (invalid)', function () {
     $repo = new RefreshTokenRepository();
 
-    expect($repo->revokeRefreshTokenFromToken('fake token'))->toBeFalse();
+    expect($repo->revokeFromTokenText('fake token'))->toBeFalse();
 });

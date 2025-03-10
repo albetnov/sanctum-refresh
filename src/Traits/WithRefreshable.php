@@ -11,7 +11,7 @@ use ReflectionClass;
 trait WithRefreshable
 {
     /**
-     * @throws InvalidModelException
+     * @throws SanctumRefreshException [ERR_INVALID_MODEL]
      */
     public function refreshToken(): HasOne
     {

@@ -37,13 +37,11 @@ class SanctumRefresh
         }
 
         throw new SanctumRefreshException(
-            "[Runtime Check] Invalid Model: $model. No PersonalAccessToken found",
+            "[Runtime Check] Invalid Model: $model. Not a valid access token model",
             meta: [
                 'model' => $model,
             ],
             tag: 'ERR_INVALID_MODEL'
         );
     }
-
-    public static function boot(): void {}
 }
