@@ -5,14 +5,20 @@ namespace Albet\SanctumRefresh\Factories;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * A data class representing TokenConfig for configuration when creating tokenExpireAt
+ */
 readonly class TokenConfig
 {
     public ?Carbon $tokenExpireAt;
 
     public ?Carbon $refreshTokenExpireAt;
 
-    public function __construct(public array $abilities = ['*'], ?Carbon $tokenExpireAt = null, ?Carbon $refreshTokenExpireAt = null)
-    {
+    public function __construct(
+        public array $abilities = ['*'],
+        ?Carbon $tokenExpireAt = null,
+        ?Carbon $refreshTokenExpireAt = null
+    ) {
         $this->tokenExpireAt = $this->getExpire('access_token', $tokenExpireAt);
         $this->refreshTokenExpireAt = $this->getExpire('refresh_token', $refreshTokenExpireAt);
     }

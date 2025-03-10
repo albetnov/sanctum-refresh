@@ -2,7 +2,7 @@
 
 namespace Albet\SanctumRefresh;
 
-use Albet\SanctumRefresh\Exceptions\InvalidModelException;
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
@@ -17,7 +17,7 @@ class SanctumRefresh
      * Use custom personal access token model
      * This also alter sanctum personal access token.
      *
-     * @throws InvalidModelException
+     * @throws SanctumRefreshException
      */
     public static function usePersonalAccessTokenModel(string|callable $model): void
     {
@@ -36,7 +36,13 @@ class SanctumRefresh
             }
         }
 
-        throw new InvalidModelException($model);
+        throw new SanctumRefreshException(
+            "[Runtime Check] Invalid Model: $model. No PersonalAccessToken found",
+            meta: [
+                'model' => $model,
+            ],
+            tag: 'ERR_INVALID_MODEL'
+        );
     }
 
     public static function boot(): void {}

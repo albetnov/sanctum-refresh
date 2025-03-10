@@ -9,14 +9,14 @@ class PruneToken extends Command
 {
     public $signature = 'prune:token';
 
-    public $description = 'Prune expired token but instead from token expiration, use expiration from refresh.';
+    public $description = 'Prune expired token while considering the refresh token';
 
     public function handle(): int
     {
         // Find refresh token that associated with Access Token.
         // Figure out their expires_at and deletes them.
         $tokens = RefreshToken::with('accessToken')
-            ->whereHas('accessToken', fn ($q) => $q->where('expires_at', '<', now()))
+            ->whereHas('accessToken', fn($q) => $q->where('expires_at', '<', now()))
             ->where('expires_at', '<', now())
             ->lazy();
 

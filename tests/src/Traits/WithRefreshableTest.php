@@ -1,6 +1,6 @@
 <?php
 
-use Albet\SanctumRefresh\Exceptions\InvalidModelException;
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
 use Albet\SanctumRefresh\Traits\WithRefreshable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -21,5 +21,6 @@ it('inject accessToken relationship', function () {
 });
 
 it('throw model invalid', function () {
-    expect((new DummyNotModel())->refreshToken())->toThrow(InvalidModelException::class);
-})->throws(InvalidModelException::class);
+    expect(fn() => (new DummyNotModel())->refreshToken())
+        ->toThrow(SanctumRefreshException::class, '[With Refreshable]: Model is not valid');
+});

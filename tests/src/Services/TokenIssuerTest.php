@@ -1,21 +1,19 @@
 <?php
 
-use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
 use Albet\SanctumRefresh\Factories\Token;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
 use Albet\SanctumRefresh\Services\TokenIssuer;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
-uses(RefreshDatabase::class);
-
-it('throws MustExtendHasApiTokens if not trait found in the given model', function () {
+it('throws ERR_INVALID_MODEL if tokenable model not having HasApiToken trait', function () {
     $fakeModel = new class extends Model {};
 
-    expect(TokenIssuer::issue($fakeModel))->toThrow(MustHaveTraitException::class);
-})->throws(MustHaveTraitException::class);
+    expect(fn() => TokenIssuer::issue($fakeModel))
+        ->toThrow(SanctumRefreshException::class, '[Issue Token]: Model is not valid');
+});
 
 it('successfully create a token', function () {
     expect(TokenIssuer::issue(User::first()))->toBeInstanceOf(Token::class);
@@ -43,7 +41,7 @@ it('throw invalid token when token already expired', function () {
         'expires_at' => now()->subMinutes(30),
     ])->id;
 
-    $fakeTokenable = $id.'|'.$fakeToken;
+    $fakeTokenable = $id . '|' . $fakeToken;
 
     expect(TokenIssuer::refreshToken($fakeTokenable))->toBeFalse();
 });

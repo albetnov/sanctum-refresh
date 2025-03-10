@@ -4,9 +4,6 @@ use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
 use Albet\SanctumRefresh\Repositories\RefreshTokenRepository;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can revoke token from given valid token id', function () {
     User::first()->createTokenWithRefresh('web');

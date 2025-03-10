@@ -1,14 +1,10 @@
 <?php
 
-use Albet\SanctumRefresh\Exceptions\InvalidTokenException;
-use Albet\SanctumRefresh\Exceptions\TokenExpiredException;
-use Albet\SanctumRefresh\Exceptions\TokenNotFoundException;
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
 use Albet\SanctumRefresh\Helpers;
 use Albet\SanctumRefresh\Models\RefreshToken;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 
-uses(RefreshDatabase::class);
 uses()->group('helpers');
 
 it('can parse refresh token successfully', function () {
@@ -35,7 +31,7 @@ it('validate and return correct refresh token instance (string)', function () {
         'token_id' => 1,
     ]);
 
-    $fetchedToken = Helpers::validateRefreshToken('1|'.$plain);
+    $fetchedToken = Helpers::validateRefreshToken('1|' . $plain);
 
     expect($fetchedToken)->toBeInstanceOf(RefreshToken::class)
         ->and($fetchedToken->id)->toBe($refreshToken->id);
@@ -56,15 +52,15 @@ it('validate and return correct refresh token instance (array)', function () {
 
 it('fail validate and throw invalid token exception (string)', function () {
     Helpers::validateRefreshToken('test');
-})->throws(InvalidTokenException::class);
+})->throws(SanctumRefreshException::class, '[Invalid Token]: Unable to parse refresh token');
 
 it('fail validate and throw invalid token exception (array)', function () {
     Helpers::validateRefreshToken([1]);
-})->throws(InvalidTokenException::class);
+})->throws(SanctumRefreshException::class, '[Invalid Token]: Expected array to contains 2 parts. Got < 2 instead');
 
 it('fail validate and throw token not found exception', function () {
     Helpers::validateRefreshToken('1|abc');
-})->throws(TokenNotFoundException::class);
+})->throws(SanctumRefreshException::class, '[Invalid Token]: Unable to locate refresh token on the Database');
 
 it('fail validate and throw token expired exception', function () {
     RefreshToken::create([
@@ -74,4 +70,4 @@ it('fail validate and throw token expired exception', function () {
     ]);
 
     Helpers::validateRefreshToken('1|abc');
-})->throws(TokenExpiredException::class);
+})->throws(SanctumRefreshException::class, '[Invalid Token]: Token has expired');

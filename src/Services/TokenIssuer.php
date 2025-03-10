@@ -2,7 +2,7 @@
 
 namespace Albet\SanctumRefresh\Services;
 
-use Albet\SanctumRefresh\Exceptions\MustHaveTraitException;
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
 use Albet\SanctumRefresh\Factories\Token;
 use Albet\SanctumRefresh\Factories\TokenConfig;
 use Albet\SanctumRefresh\Helpers;
@@ -24,7 +24,11 @@ class TokenIssuer
         $tokenableTraits = array_values(class_uses($tokenable));
 
         if (! in_array(HasApiTokens::class, $tokenableTraits)) {
-            throw new MustHaveTraitException(get_class($tokenable), HasApiTokens::class);
+            throw new SanctumRefreshException(
+                "[Issue Token]: Model is not valid",
+                meta: ['model' => get_class($tokenable)],
+                tag: 'ERR_INVALID_MODEL'
+            );
         }
 
         /* @phpstan-ignore-next-line */
@@ -59,6 +63,7 @@ class TokenIssuer
         // Find token from given id
         $token = RefreshToken::with('accessToken')
             ->where('expires_at', '>', now())
+            ->where('token', $tokenParts[1])
             ->find($tokenParts[0]);
 
         if (! $token) {

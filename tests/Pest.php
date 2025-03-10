@@ -13,7 +13,7 @@ $groups = [
 foreach ($groups as $key => $value) {
     uses(TestCase::class)
         ->group($key)
-        ->in(__DIR__."/src/$value");
+        ->in(__DIR__ . "/src/$value");
 }
 
-uses(TestCase::class)->in(__DIR__.'/src/HelpersTest.php', __DIR__.'/src/SanctumRefreshTest.php');
+uses(TestCase::class)->in(__DIR__ . '/src/HelpersTest.php', __DIR__ . '/src/SanctumRefreshTest.php');

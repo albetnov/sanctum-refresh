@@ -1,6 +1,6 @@
 <?php
 
-use Albet\SanctumRefresh\Exceptions\InvalidModelException;
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
 use Albet\SanctumRefresh\SanctumRefresh;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +19,6 @@ it('cannot change personal access token model (invalid class)', function () {
 
     SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class);
 
-    expect(SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class))
-        ->toThrow(InvalidModelException::class);
-})->throws(InvalidModelException::class);
+    expect(fn() => SanctumRefresh::usePersonalAccessTokenModel(FakePersonalAccessToken::class))
+        ->toThrow(SanctumRefreshException::class, '[Runtime Check] Invalid Model: FakePersonalAccessToken. No PersonalAccessToken found');
+});

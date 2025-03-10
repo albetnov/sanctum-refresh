@@ -2,12 +2,9 @@
 
 use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-
-uses(RefreshDatabase::class);
 
 it('Can prune token successfully (both expired)', function () {
     DB::table('personal_access_tokens')->insert([

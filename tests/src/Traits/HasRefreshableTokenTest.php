@@ -3,9 +3,6 @@
 use Albet\SanctumRefresh\Factories\Token;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Albet\SanctumRefresh\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('create token with refresh successfully', function () {
     expect(User::first()->createTokenWithRefresh('web'))->toBeInstanceOf(Token::class)

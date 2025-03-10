@@ -10,22 +10,25 @@ class RefreshTokenRepository
     public function revokeRefreshTokenFromTokenId(int $tokenId): bool
     {
         $find = RefreshToken::where('token_id', $tokenId)->first();
-        if ($find) {
-            $find->delete();
 
-            return true;
-        }
+        if (!$find) return false;
 
-        return false;
+        $find->delete();
+
+        return true;
     }
 
     public function revokeRefreshTokenFromToken(string $plainRefreshToken): bool
     {
-        $refreshToken = Helpers::verifyRefreshToken($plainRefreshToken);
+        $tokenParts = Helpers::parseRefreshToken($plainRefreshToken);
 
-        if (! $refreshToken) {
-            return false;
-        }
+        if (!$tokenParts) return false;
+
+        $refreshToken = RefreshToken::where('expired_at', '>=', now())
+            ->where('token', $tokenParts[1])
+            ->find($tokenParts[0]);
+
+        if (! $refreshToken) return false;
 
         $refreshToken->delete();
 

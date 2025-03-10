@@ -5,6 +5,10 @@ namespace Albet\SanctumRefresh\Factories;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Laravel\Sanctum\NewAccessToken;
 
+/**
+ * A data class representing Token which also contains
+ * RefreshToken
+ */
 readonly class Token
 {
     public string $plainTextRefreshToken;
