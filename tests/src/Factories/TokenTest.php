@@ -7,26 +7,46 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\NewAccessToken;
 
-it('token factory built successfully', function () {
+use function Spatie\PestPluginTestTime\testTime;
+
+beforeEach(function () {
+    testTime()->freeze();
+    $this->expiresAt = now()->addMinutes(Config::get('sanctum-refresh.expiration.access_token'));
+
     $token = User::find(1)->createToken(
         'web',
-        $config['abilities'] ?? ['*'],
-        $config['token_expires_at'] ??
-            now()->addMinutes(Config::get('sanctum-refresh.expiration.access_token'))
+        ['*'],
+        $this->expiresAt,
     );
 
     $plainRefreshToken = Str::random(40);
 
+    $this->refreshExpiresAt = now()->addMinutes(Config::get('sanctum-refresh.expiration.refresh_token'));
+
     $refreshToken = RefreshToken::create([
         'token' => hash('sha256', $plainRefreshToken),
-        'expires_at' => $config['refresh_expires_at'] ??
-            now()->addMinutes(Config::get('sanctum-refresh.expiration.refresh_token')),
+        'expires_at' => $this->refreshExpiresAt,
         'token_id' => $token->accessToken->id,
     ]);
 
-    $tokenInstance = new Token($token, $plainRefreshToken, $refreshToken);
+    $this->tokenInstance = new Token($token, $plainRefreshToken, $refreshToken);
+});
 
-    expect($tokenInstance->token)->toBeInstanceOf(NewAccessToken::class)
-        ->and($tokenInstance->plainTextRefreshToken)->toBeString()
-        ->and($tokenInstance->refreshToken)->toBeInstanceOf(RefreshToken::class);
+it('token factory built successfully', function () {
+    expect($this->tokenInstance->token)->toBeInstanceOf(NewAccessToken::class)
+        ->and($this->tokenInstance->plainTextToken)->toBeString()
+        ->and($this->tokenInstance->plainTextRefreshToken)->toBeString()
+        ->and($this->tokenInstance->refreshToken)->toBeInstanceOf(RefreshToken::class)
+        ->and($this->tokenInstance->tokenExpiresAt->format('Y-m-d H:i:s'))->toBe($this->expiresAt->format('Y-m-d H:i:s'))
+        ->and($this->tokenInstance->refreshTokenExpiresAt->format('Y-m-d H:i:s'))->toBe($this->refreshExpiresAt->format('Y-m-d H:i:s'));
+});
+
+it('token factory toArray converts to array', function () {
+    $data = $this->tokenInstance->toArray();
+
+    expect($data)->toBeArray()->toHaveLength(4)
+        ->and($data['access_token'])->toBeString()
+        ->and($data['refresh_token'])->toBeString()
+        ->and($data['access_token_expires_at'])->toBeString()
+        ->and($data['refresh_token_expires_at'])->toBeString();
 });

@@ -48,16 +48,14 @@ return [
 
 ## Quick Start
 
-In order to Sanctum-Refresh, you just need to acknowledge these API:
-
-- Creating token
+### Creating token
 
 ```php
 <?php
 
 namespace App\Http\Controllers;
 
-use Albet\SanctumRefresh\TokenIssuer;
+use Albet\SanctumRefresh\Services\TokenIssuer;
 
 class TokenController {
     function newToken() {
@@ -65,12 +63,98 @@ class TokenController {
 
         return response()->json([
             'message' => 'Token generated successfully!',
-'data' => [
-    'access_token' => $token->accessToken->plainTextToken,
-]
+            'data' => $token->toArray(),
         ]);
     }
 }
+```
+
+Response schema:
+
+```json
+{
+    "message": "Token generated successfully!",
+    "data": {
+        "access_token": "[string]",
+        "access_token_expires_at": "[Y-m-d H:i:s]",
+        "refresh_token": "[string]",
+        "refresh_token_expires_at": "[Y-m-d H:i:s]"
+    }
+}
+```
+
+### Refresh Token Middleware (optional, if you want to customize error based on expired, invalid format, etc)
+
+#### Create the Middleware
+
+```php
+<?php
+
+// (...)
+
+use Albet\SanctumRefresh\Helpers;
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
+
+class TokenMiddleware {
+    public function handle(Request $request, \Closure $next): Response {
+        
+        try {
+            Helpers::getRefreshToken(
+                $request->get('refresh_token', '') // adjust to your liking, either from Query Parameter, Body, or Header.
+            );
+
+            return $next($request);
+        } catch (SanctumRefreshException $e) {
+            // handle tags of SanctumRefreshException
+            return response()->json([
+                'error' => 'Refresh token invalid'
+            ], 400);
+        }
+    }
+}
+```
+
+#### Applying your middleware to your routes
+
+```php
+<?php
+
+// imports...
+
+Route::post('refresh-token', [TokenController::class, 'refreshToken'])->middleware(TokenMiddleware::class);
+```
+
+### Handling the refresh token creation
+
+```php
+<?php
+
+use Albet\SanctumRefresh\Services\TokenIssuer;
+
+class TokenController {
+    public function refreshToken(Request $request) {
+        $newToken = TokenIssuer::refreshToken($request->get('refresh-token', ''));
+
+        if(!$newToken) {
+            return response()->json([
+                'error' => 'Refresh token not valid',
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => 'New token created',
+            'data' => $newToken->toArray(),
+        ]);
+    }
+}
+```
+
+### Pruning Token
+
+Register `prune:token` on your commands `Kernel.php`, you can run it as cron job:
+
+```php
+Schedule::command('prune:token')->daily();
 ```
 
 ## Testing
