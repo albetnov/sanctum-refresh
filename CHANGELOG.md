@@ -88,3 +88,23 @@ Albet\SanctumRefresh\Traits\HasRefreshableToken::class
 ```php
 Albet\SanctumRefresh\Repositories\RefreshTokenRepository::class
 ```
+
+## 2.0.1
+
+Apart from being 1 version difference from beta, this version introduces major changes including breaking ones:
+
+- Removed `Albet\SanctumRefresh\Helpers\CheckForRefreshToken` class
+- Removed `config_builder` in favor of `Albet\SanctumRefresh\Factories\TokenConfig` class
+- Removed `getToken` from `Albet\SanctumRefresh\Factories\Token` class
+- Removed `sanctum_refresh` entry from the `sanctum_refresh.php` config file
+- Removed `AuthController` and its affected routes (`login`, `refresh`)
+- Removed `InvalidModelException`, `InvalidTokenException`, `MustExtendsHasApiTokens` exceptions in favor of `SanctumRefreshExceptions`
+- Removed `Albet\SanctumRefresh\Helpers\CheckForRefreshToken` helper in favor of `Albet\SanctumRefresh\Helpers::getRefreshToken`
+- Renamed `revokeRefreshTokenFromTokenId` to `revokeFromTokenId` in `RefreshTokenRepository`
+- Renamed `revokeRefreshTokenFromToken` to `revokeFromTokenText` in `RefreshTokenRepository`
+- Removed `LoginRequest`
+- Removed `boot` and `routes` method in SanctumRefresh facade
+- Renamed `HasRefreshable` to `HasRefreshableToken`
+- Added `WithRefreshable` trait for relationship with `RefreshToken` model
+
+and many more changes can be check on: https://github.com/albetnov/sanctum-refresh/compare/2.0.0-beta...2.x
