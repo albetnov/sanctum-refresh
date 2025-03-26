@@ -3,6 +3,7 @@
 namespace Albet\SanctumRefresh;
 
 use Albet\SanctumRefresh\Commands\PruneToken;
+use Albet\SanctumRefresh\Repositories\RefreshTokenRepository;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -22,10 +23,13 @@ class SanctumRefreshServiceProvider extends PackageServiceProvider
             ->hasCommand(PruneToken::class);
     }
 
-    public function boot()
+    public function register()
     {
-        parent::boot();
+        parent::register();
 
-        SanctumRefresh::boot();
+        $this->app->singleton(
+            RefreshTokenRepository::class,
+            fn($app) => new RefreshTokenRepository()
+        );
     }
 }

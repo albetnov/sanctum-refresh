@@ -6,7 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/albetnov/sanctum-refresh.svg?style=flat-square)](https://packagist.org/packages/albetnov/sanctum-refresh)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-lime)](https://albetnov.github.io/sanctum-refresh/)
 
-A Package to extend Sanctum to have refresh token as well.
+Minimal and flexible package to extend Sanctum to have refresh token as well.
 
 ## Installation
 
@@ -43,254 +43,119 @@ return [
         // set the fallback of refresh token expiration
         'refresh_token' => 30, // 30 minutes
     ],
-    /**
-     * Configuration of Sanctum Refresh behaviour
-     */
-    'sanctum_refresh' => [
-        /**
-         * Custom the api response message
-         * array<string, string>
-         */
-        'message' => [
-            // Authenticated successful message to be used by /login route
-            'authed' => 'Authentication success!',
-            // Invalid or expired refresh token message
-            'invalidMsg' => 'Refresh token is expired or invalid.',
-        ],
-        /**
-         * Custom the routes behaviour
-         * array<string, string>
-         */
-        'routes' => [
-            // Only show refresh route (hide the login route)
-            'refreshOnly' => false,
-
-            /**
-             * Custom the routes urls
-             * array<string, string>
-             */
-            'urls' => [
-                'login' => '/login',
-                'refresh' => '/refresh',
-            ],
-
-            /**
-             * Custom the routes middlewares
-             * array<string, ?array>
-             */
-            'middlewares' => [
-                'login' => null,
-                'refresh' => ['checkRefreshToken'],
-            ],
-        ],
-    ],
 ];
 ```
 
 ## Quick Start
 
-The easiest way to start with this package are using the provided scaffold.
-
-First, install the provided Middleware at `App\Http\Kernel` in `$routeMiddleware` by adding:
+### Creating token
 
 ```php
-'checkRefreshToken' => Albet\SanctumRefresh\Middleware\CheckRefreshToken
+<?php
+
+namespace App\Http\Controllers;
+
+use Albet\SanctumRefresh\Services\TokenIssuer;
+
+class TokenController {
+    function newToken() {
+        $token = TokenIssuer::issue($request->user(), guard: 'api');
+
+        return response()->json([
+            'message' => 'Token generated successfully!',
+            'data' => $token->toArray(),
+        ]);
+    }
+}
 ```
 
-Then register the routes by putting code above in any service providers. E.g. `AuthServiceProvider`:
+Response schema:
+
+```json
+{
+    "message": "Token generated successfully!",
+    "data": {
+        "access_token": "[string]",
+        "access_token_expires_at": "[Y-m-d H:i:s]",
+        "refresh_token": "[string]",
+        "refresh_token_expires_at": "[Y-m-d H:i:s]"
+    }
+}
+```
+
+### Refresh Token Middleware (optional, if you want to customize error based on expired, invalid format, etc)
+
+#### Create the Middleware
 
 ```php
-SanctumRefresh::routes();
+<?php
+
+// (...)
+
+use Albet\SanctumRefresh\Helpers;
+use Albet\SanctumRefresh\Exceptions\SanctumRefreshException;
+
+class TokenMiddleware {
+    public function handle(Request $request, \Closure $next): Response {
+        
+        try {
+            Helpers::getRefreshToken(
+                $request->get('refresh_token', '') // adjust to your liking, either from Query Parameter, Body, or Header.
+            );
+
+            return $next($request);
+        } catch (SanctumRefreshException $e) {
+            // handle tags of SanctumRefreshException
+            return response()->json([
+                'error' => 'Refresh token invalid'
+            ], 400);
+        }
+    }
+}
 ```
 
-After that the routes should be accessible with given config urls. E.g. `/login`, `/refresh`. Or you can just
-look into it by performing:
+#### Applying your middleware to your routes
 
-```bash
-php artisan route:list
+```php
+<?php
+
+// imports...
+
+Route::post('refresh-token', [TokenController::class, 'refreshToken'])->middleware(TokenMiddleware::class);
 ```
 
-The routes will also register under the name `login` and `refresh` assuming you put the routes not inside a 
-grouping with name prefix.
+### Handling the refresh token creation
 
-The `login` routes accepts `username` or `email` as user identifier and takes `password` for the password.
+```php
+<?php
 
-In the other hand the `refresh` routes accepts neither `refresh_token` cookie or `refresh_token` json body.
+use Albet\SanctumRefresh\Services\TokenIssuer;
 
-> Both of the above urls are accessible with `POST` method.
+class TokenController {
+    public function refreshToken(Request $request) {
+        $newToken = TokenIssuer::refreshToken($request->get('refresh-token', ''));
 
-## Going Manual
+        if(!$newToken) {
+            return response()->json([
+                'error' => 'Refresh token not valid',
+            ], 400);
+        }
 
-Sanctum Refresh make it easy and painless for you to for performing an manual integration with your project
-and this package.
-
-- Auth Scaffolding:
-    
-    Sanctum Refresh provide an auth scaffold. This scaffold can be used for your custom controllers.
-    
-    ```php
-    Albet\SanctumRefresh\Requests\LoginRequest::class
-    ```
-    
-    The `LoginRequest` provide `auth()` method to help you authenticate the user by either `username` or `email` and finally
-    `password`. 
-
-- CheckForRefreshToken:
-    
-    It is unnecessary for you to use `CheckRefreshToken` if you don't want to. For instance, you may need to modify on how
-    the middleware will take Refresh Token. You can achieve this will minimal code using the provided:
-    
-    ```php
-    Albet\SanctumRefresh\Helpers\CheckForRefreshToken::check($refreshToken);
-    ```
-    
-    Simply pass the `$refreshToken` as a string and you're set. The Helpers will take care validating
-    the entire thing for you and return `true` if success, throw:
-    
-    ```php
-    Albet\SanctumRefresh\Exceptions\InvalidTokenException::class
-    ```
-    
-    if fails. An example usage (CheckRefreshToken middleware):
-    ```php
-    // Check refresh token.
-    $refreshToken = $request->hasCookie('refresh_token') ?
-        $request->cookie('refresh_token') :
-        $request->get('refresh_token');
-    
-    if (! $refreshToken) {
         return response()->json([
-            'message' => SanctumRefresh::$middlewareMsg,
-        ], 400);
+            'message' => 'New token created',
+            'data' => $newToken->toArray(),
+        ]);
     }
-    
-    try {
-        CheckForRefreshToken::check($refreshToken);
-    
-        return $next($request);
-    } catch (InvalidTokenException $e) {
-        return response()->json([
-            'message' => SanctumRefresh::$middlewareMsg,
-            'reason' => $e->getMessage(),
-        ], 400);
-    }
-    ```
-    Above is `CheckRefreshToken` middleware code.
+}
+```
 
-- Custom PersonalAccessToken Model
-    
-    Since version 2. Sanctum Refresh no longer overriding any codes from Sanctum. Instead, this package wraps around it.
-    With that being said, You're now free to modify whatever you want with the `PersonalAccessToken` Model. This is 
-    important if you want to use this package in a already exist project.
-    Simply put:
-    
-    ```php
-    use Custom\Models\PersonalAccessToken;
-    Albet\SanctumRefresh\SanctumRefresh::usePersonalAccessTokenModel(PersonalAccessToken::class);
-    ```
-    
-    In any service provides. The model though must extend `HasApiToken` from Sanctum.
-    
-    - HasRefreshable Trait (PersonalAccessToken extension)
-    
-    Sanctum Refresh also provide:
-    
-    ```php
-    Albet\SanctumRefresh\Traits\HasRefreshable::class
-    ```
-    
-    Above trait will inject relationship to your custom `PersonalAccessToken` model.
+### Pruning Token
 
-- TokenIssuer
+Register `prune:token` on your commands `Kernel.php`, you can run it as cron job:
 
-    Just like before, SanctumRefresh also provide `TokenIssuer`:
-    
-    ```php
-    Albet\SanctumRefresh\Services\TokenIssuer::class
-    ```
-    
-    This class contains two methods:
-    
-    ```php
-    Albet\SanctumRefresh\Services\TokenIssuer::issue($model, $name, $config)
-    ```
-    
-    Above method will generate a token complete with refresh token. The method takes 3 arguments. The Tokenable Model, 
-    token name, and finally config (expiration, etc).
-    
-    ```php
-    Albet\SanctumRefresh\Services\TokenIssuer::refreshToken($refreshToken, $name, $config)
-    ```
-    
-    Above method will regenerate a token. But instead of based on Tokenable Model. This method will regenerate the token
-    based on given Refresh Token. This method takes 3 arguments. The plain refresh token string, the new token name, 
-    and config (expiration, etc).
-    
-    Both methods above return `Collection` instance with entry like below:
-    ```php
-    [
-        accessTokenInstance, 
-        refreshTokenInstance,
-        plain => [accessToken, refreshToken]
-    ]
-    ```
-    
-    
-> Sanctum Refresh also provide `config_builder()` to generate a config arrays with more easy to read. Example usage:
-> ```php
-> TokenIssuer::refreshToken($string, $name, config_builder(
->   abilities: ['*'], 
->   tokenExpiresAt: now()->addSeconds(30), 
->   refreshTokenExpiresAt: now()->addHour()
-> ))
-> ```
-
-- HasRefreshableToken Trait (User Model)
-    
-    Instead of having pain putting `$model` over and over in `TokenIssuer`. You can just use `HasRefreshableToken` trait in
-    your user model:
-    
-    ```php
-    <?php
-    
-    use Illuminate\Database\Eloquent\Factories\HasFactory;
-    use Illuminate\Database\Eloquent\Model;
-    use Laravel\Sanctum\HasApiTokens;
-    use Albet\SanctumRefresh\Traits\HasRefreshableToken;
-    
-    class User extends Model {
-        use HasApiTokens, HasFactory, HasRefreshableToken;
-    ...
-    ```
-    
-    Above is the example of your final User model will look like.
-    
-    This trait will provide you with 2 methods.
-    
-    - createTokenWithRefresh($name, $config)
-        
-        Create an access token as well as refresh token. A wrapper around `TokenIssuer::issue()` without `$model`.
-    
-    - revokeBothTokens()
-    
-        Revoke both access token and refresh token.
-
-- RefreshTokenRepository
-    
-    Finally, Sanctum Refresh also provide you a repository. As it's name suggest. This repository will help you with
-    Revoking Refresh Token (Without revoking the access token).
-    This repository provides you with 2 methods.
-    
-    - Revoke refresh token from given id
-    
-        `revokeRefreshTokenFromTokenId($id)` will revoke / delete the refresh token from given `$id`. This `$id` must be
-        an id of RefreshToken table.
-    - Revoke refresh token from plain token
-        
-        `revokeRefreshTokenFromToken($stringToken)` will revoke / delete the refresh token from given
-        plain token.
-
-That's all!
+```php
+Schedule::command('prune:token')->daily();
+```
 
 ## Testing
 
