@@ -171,6 +171,8 @@ Figure out the code coverage:
 composer test-coverage
 ```
 
+Local `composer test` runs replay via [Pest's Test Impact Analysis](https://pestphp.com/docs/tia), skipping unaffected tests, when `pcov` or Xdebug (coverage mode) is installed. It's inert without one, and always off in CI.
+
 ## Changelog
 
 Please see [Changelog](CHANGELOG.md) for more information.

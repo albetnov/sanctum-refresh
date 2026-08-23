@@ -2,6 +2,8 @@
 
 use Albet\SanctumRefresh\Tests\TestCase;
 
+pest()->tia()->locally();
+
 $groups = [
     'commands' => 'Commands',
     'factories' => 'Factories',
