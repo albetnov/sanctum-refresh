@@ -8,6 +8,7 @@ use Albet\SanctumRefresh\Factories\TokenConfig;
 use Albet\SanctumRefresh\Helpers;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -70,26 +71,29 @@ class TokenIssuer
             return false;
         }
 
-        // Regenerate token, keeping the original token's name unless a new one is given.
-        $newToken = $token->accessToken->tokenable
-            ->createToken(
-                $tokenName ?? $token->accessToken->name,
-                $tokenConfig->abilities,
-                $tokenConfig->tokenExpireAt
-            );
+        return DB::transaction(function () use ($token, $tokenName, $tokenConfig) {
+            // Regenerate token, keeping the original token's name unless a new one is given.
+            $newToken = $token->accessToken->tokenable
+                ->createToken(
+                    $tokenName ?? $token->accessToken->name,
+                    $tokenConfig->abilities,
+                    $tokenConfig->tokenExpireAt
+                );
 
-        $plainRefreshToken = Str::random(40);
+            $plainRefreshToken = Str::random(40);
 
-        $refreshToken = RefreshToken::create([
-            'token_id' => $newToken->accessToken->id,
-            'token' => hash('sha256', $plainRefreshToken),
-            'expires_at' => $tokenConfig->refreshTokenExpireAt,
-        ]);
+            $refreshToken = RefreshToken::create([
+                'token_id' => $newToken->accessToken->id,
+                'token' => hash('sha256', $plainRefreshToken),
+                'expires_at' => $tokenConfig->refreshTokenExpireAt,
+            ]);
 
-        // Delete current token (revoke refresh token)
-        $token->accessToken->delete();
-        $token->delete();
+            // Delete child (refresh_tokens) before parent (personal_access_tokens) —
+            // token_id is RESTRICT/NO ACTION on MySQL/Postgres.
+            $token->delete();
+            $token->accessToken->delete();
 
-        return new Token($newToken, $plainRefreshToken, $refreshToken);
+            return new Token($newToken, $plainRefreshToken, $refreshToken);
+        });
     }
 }

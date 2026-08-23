@@ -4,6 +4,7 @@ namespace Albet\SanctumRefresh\Commands;
 
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 use function Laravel\Prompts\info;
 
@@ -26,8 +27,12 @@ class PruneToken extends Command
         foreach ($tokens as $token) {
             // check if relationship match
             if ($token->accessToken !== null) {
-                $token->accessToken->delete();
-                $token->delete();
+                DB::transaction(function () use ($token) {
+                    // Delete child (refresh_tokens) before parent (personal_access_tokens) —
+                    // token_id is RESTRICT/NO ACTION on MySQL/Postgres.
+                    $token->delete();
+                    $token->accessToken->delete();
+                });
             }
         }
 

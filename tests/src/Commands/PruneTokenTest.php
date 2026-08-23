@@ -4,7 +4,37 @@ use Albet\SanctumRefresh\Models\PersonalAccessToken;
 use Albet\SanctumRefresh\Models\RefreshToken;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+
+it('prunes both rows without violating the token_id foreign key delete order', function () {
+    Schema::enableForeignKeyConstraints();
+
+    try {
+        DB::table('personal_access_tokens')->insert([
+            'id' => 1,
+            'name' => 'test',
+            'token' => Str::random(40),
+            'abilities' => '*',
+            'expires_at' => now()->subMinutes(20),
+            'tokenable_type' => 'Albet\SanctumRefresh\Models\User',
+            'tokenable_id' => 1,
+        ]);
+
+        RefreshToken::create([
+            'token_id' => PersonalAccessToken::first()->id,
+            'token' => Str::random(40),
+            'expires_at' => now()->subMinutes(5),
+        ]);
+
+        Artisan::call('prune:token');
+
+        expect(PersonalAccessToken::first())->toBeNull()
+            ->and(RefreshToken::first())->toBeNull();
+    } finally {
+        Schema::disableForeignKeyConstraints();
+    }
+});
 
 it('Can prune token successfully (both expired)', function () {
     DB::table('personal_access_tokens')->insert([
