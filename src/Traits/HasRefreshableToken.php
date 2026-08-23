@@ -22,20 +22,18 @@ trait HasRefreshableToken
     {
         $accTokens = $this->load('tokens')->tokens->all();
 
-        if ($accTokens) {
-            /** @var RefreshTokenRepository $refreshTokenRepository */
-            $refreshTokenRepository = app(RefreshTokenRepository::class);
-            foreach ($accTokens as $accToken) {
-                // @phpstan-ignore-next-line
-                if ($accToken->id) {
-                    $refreshTokenRepository->revokeFromTokenId($accToken->id);
-                    $accToken->delete();
-
-                    return true;
-                }
-            }
+        if (! $accTokens) {
+            return false;
         }
 
-        return false;
+        /** @var RefreshTokenRepository $refreshTokenRepository */
+        $refreshTokenRepository = app(RefreshTokenRepository::class);
+
+        foreach ($accTokens as $accToken) {
+            $refreshTokenRepository->revokeFromTokenId($accToken->id);
+            $accToken->delete();
+        }
+
+        return true;
     }
 }

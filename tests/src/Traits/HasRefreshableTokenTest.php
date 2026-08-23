@@ -22,3 +22,13 @@ it('revoked both token successfully', function () {
 it('not revoked any token because user not have one', function () {
     expect(User::first()->revokeBothToken())->toBeFalse();
 });
+
+it('revokes all tokens and their refresh tokens when user has multiple', function () {
+    $user = User::first();
+    $user->createTokenWithRefresh('web');
+    $user->createTokenWithRefresh('mobile');
+
+    expect($user->revokeBothToken())->toBeTrue()
+        ->and(User::first()->tokens->isEmpty())->toBeTrue()
+        ->and(RefreshToken::count())->toBe(0);
+});
