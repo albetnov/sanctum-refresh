@@ -25,8 +25,12 @@ it('cannot parse refresh token due to invalid format (split < 2)', function () {
 });
 
 it('validate and return correct refresh token instance', function () {
+    // Desync refresh_tokens.id from token_id so a naive find($id) would miss.
+    RefreshToken::create(['token' => Str::random(64), 'expires_at' => now()->addMinutes(10), 'token_id' => 999]);
+
+    $plain = Str::random(40);
     $refreshToken = RefreshToken::create([
-        'token' => $plain = Str::random(40),
+        'token' => hash('sha256', $plain),
         'expires_at' => now()->addMinutes(10),
         'token_id' => 1,
     ]);

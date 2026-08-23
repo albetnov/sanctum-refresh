@@ -57,7 +57,8 @@ class Helpers
             );
         }
 
-        $refreshToken = RefreshToken::find($refreshTokenParts[0]);
+        // plainRefreshToken embeds token_id (the access token's id), not the refresh row's own id.
+        $refreshToken = RefreshToken::where('token_id', $refreshTokenParts[0])->first();
         if (! $refreshToken) {
             throw new SanctumRefreshException(
                 '[Invalid Token]: Unable to locate refresh token on the Database',
@@ -70,7 +71,7 @@ class Helpers
             throw new SanctumRefreshException('[Invalid Token]: Token has expired', tag: 'ERR_TOKEN_EXPIRED');
         }
 
-        if ($refreshToken->token !== $refreshTokenParts[1]) {
+        if ($refreshToken->token !== hash('sha256', $refreshTokenParts[1])) {
             throw new SanctumRefreshException('[Invalid Token]: Token is not valid', tag: 'ERR_TOKEN_INVALID');
         }
 
