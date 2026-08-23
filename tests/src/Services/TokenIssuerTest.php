@@ -33,6 +33,21 @@ it('generate the refresh token successfully', function () {
     expect(TokenIssuer::refreshToken($refreshToken))->toBeInstanceOf(Token::class);
 });
 
+it('refreshes correctly and keeps the original name when refresh_tokens.id diverges from token_id', function () {
+    $user = User::first();
+
+    // Desync refresh_tokens.id from token_id: an access token with no matching
+    // refresh token row shifts personal_access_tokens ids ahead of refresh_tokens ids.
+    $user->createToken('decoy');
+
+    $issued = TokenIssuer::issue($user, 'mobile');
+
+    $refreshed = TokenIssuer::refreshToken($issued->plainTextRefreshToken);
+
+    expect($refreshed)->toBeInstanceOf(Token::class)
+        ->and($refreshed->token->accessToken->name)->toBe('mobile');
+});
+
 it('throw invalid token when token already expired', function () {
     $fakeToken = Str::random(40);
     $id = RefreshToken::create([

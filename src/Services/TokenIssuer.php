@@ -51,7 +51,7 @@ class TokenIssuer
 
     public static function refreshToken(
         string $refreshToken,
-        string $tokenName = 'web',
+        ?string $tokenName = null,
         TokenConfig $tokenConfig = new TokenConfig()
     ): Token|false {
         $tokenParts = Helpers::parseRefreshToken($refreshToken);
@@ -60,19 +60,20 @@ class TokenIssuer
             return false;
         }
 
-        // Find token from given id
+        // Find token from given access token id (plainTextRefreshToken embeds token_id, not the refresh token's own id)
         $token = RefreshToken::with('accessToken')
             ->check($tokenParts[1])
-            ->find($tokenParts[0]);
+            ->where('token_id', $tokenParts[0])
+            ->first();
 
         if (! $token) {
             return false;
         }
 
-        // Regenerate token.
+        // Regenerate token, keeping the original token's name unless a new one is given.
         $newToken = $token->accessToken->tokenable
             ->createToken(
-                $tokenName,
+                $tokenName ?? $token->accessToken->name,
                 $tokenConfig->abilities,
                 $tokenConfig->tokenExpireAt
             );
